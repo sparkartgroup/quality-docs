@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var fs = require('fs');
 var glob = require('glob-fs')({ gitignore: true });
 var map = require("async/map");
