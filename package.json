@@ -21,5 +21,14 @@
   "bugs": {
     "url": "https://github.com/SparkartGroupInc/quality-docs/issues"
   },
-  "homepage": "https://github.com/SparkartGroupInc/quality-docs#readme"
+  "homepage": "https://github.com/SparkartGroupInc/quality-docs#readme",
+  "dependencies": {
+    "async": "^2.0.1",
+    "glob-fs": "^0.1.6",
+    "remark": "^5.0.1",
+    "remark-retext": "^2.0.0",
+    "retext": "^3.0.0",
+    "retext-readability": "^2.0.0",
+    "vfile-reporter": "^2.0.1"
+  }
 }
