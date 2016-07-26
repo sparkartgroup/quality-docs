@@ -31,8 +31,8 @@ map(docFiles, toVFile.read, function(err, files){
       })
       .use(remark2retext, retext() // Convert markdown to plain text
         .use(readability, {age: 18, minWords: 7}) // Target age is low so that understanding requires less effort
-        .use(simplify) // Check for unneccesary complexity
-        .use(equality) // Check for inconsiderate language
+        .use(simplify, {ignore: ['require', 'requires', 'request', 'capability']}) // Check for unneccesary complexity
+        .use(equality, {ignore: ['host', 'hosts']}) // Check for inconsiderate language
         .use(concise) // Check for filler words to make writing more concise
       )
       .process(file, function (err, results) {
