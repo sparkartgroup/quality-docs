@@ -25,12 +25,15 @@ map(docFiles, getFiles, function(err, files){
   var hasErrors = false;
   files.forEach((file) => {
     remark()
-      .use(lint, {'maximum-line-length': false})
+      .use(lint, {
+        'maximum-line-length': false,
+        'list-item-indent': false
+      })
       .use(remark2retext, retext() // Convert markdown to plain text
-        .use(readability, {age: 18}) // Target age is low so that understanding requires less effort
+        .use(readability, {age: 18, minWords: 7}) // Target age is low so that understanding requires less effort
         .use(simplify) // Check for unneccesary complexity
         .use(equality) // Check for inconsiderate language
-        .use(concise) // Check for filler words to make writing more concise
+        .use(concise, {ignore: ['about']}) // Check for filler words to make writing more concise
       )
       .process(file.contents, function (err, results) {
         results.filename = file.name;

@@ -27,4 +27,10 @@ README.md
 
 ## Other Notes
 
-This tool uses [retext](https://github.com/wooorm/retext) to check the quality of writing in your project's documentation.
+This tool uses [retext](https://github.com/wooorm/retext) to check the quality of writing in your project's documentation using these plugins;
+
+* [remark-lint](https://github.com/woorm/remark-lint) checks for proper markdown formatting.
+* [retext-readability](https://github.com/woorm/retext-readability) checks the reading level of the whole document.
+* [retext-simplify](https://github.com/woorm/retext-simplify) warns about over-complicated phrases.
+* [retext-equality](https://github.com/woorm/retext-equality) warns about insensitive, inconsiderate language.
+* [retext-intensify](https://github.com/woorm/retext-intensify) warns about filler words.
