@@ -4,8 +4,8 @@
   "description": "A CLI tool to evaluate the quality of writing in your project's markdown files.",
   "main": "index.js",
   "bin": {
-   "quality-docs": "./index.js"
- },
+    "quality-docs": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -27,7 +27,7 @@
   "homepage": "https://github.com/SparkartGroupInc/quality-docs#readme",
   "dependencies": {
     "async": "^2.0.1",
-    "glob-fs": "^0.1.6",
+    "minimist": "^1.2.0",
     "remark": "^5.0.1",
     "remark-retext": "^2.0.0",
     "retext": "^3.0.0",
