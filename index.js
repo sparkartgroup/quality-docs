@@ -23,6 +23,34 @@ if (docFiles.length <= 0) {
 map(docFiles, toVFile.read, function(err, files){
   var allResults = [];
   var hasErrors = false;
+
+  // Commonly used words in documentation to ignore in checks
+  var wordsToIgnore = [
+    'address',
+    'attempt',
+    'capability',
+    'combined',
+    'contains',
+    'effect',
+    'expiration',
+    'function',
+    'host',
+    'hosts',
+    'initial',
+    'minimize',
+    'minimum',
+    'multiple',
+    'option',
+    'previous',
+    'require',
+    'requires',
+    'request',
+    'submit',
+    'transmit',
+    'try',
+    'type'
+  ];
+
   files.forEach((file) => {
     remark()
       .use(lint, {
@@ -31,8 +59,8 @@ map(docFiles, toVFile.read, function(err, files){
       })
       .use(remark2retext, retext() // Convert markdown to plain text
         .use(readability, {age: 18, minWords: 7}) // Target age is low so that understanding requires less effort
-        .use(simplify, {ignore: ['require', 'requires', 'request', 'capability']}) // Check for unneccesary complexity
-        .use(equality, {ignore: ['host', 'hosts']}) // Check for inconsiderate language
+        .use(simplify, {ignore: wordsToIgnore}) // Check for unneccesary complexity
+        .use(equality, {ignore: wordsToIgnore}) // Check for inconsiderate language
         .use(concise) // Check for filler words to make writing more concise
       )
       .process(file, function (err, results) {
