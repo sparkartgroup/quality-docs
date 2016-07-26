@@ -11,32 +11,41 @@ var remark2retext = require('remark-retext');
 var report = require('vfile-reporter');
 var retext = require('retext');
 var simplify = require('retext-simplify');
+var toVFile = require('to-vfile');
 
-var docFiles = argv._;
+// Build array of files that match input glob
+var docFiles = [];
+argv._.forEach((file) => { if (!file.includes('*')) docFiles.push(file); });
+if (docFiles.length <= 0) {
+  throw new Error('No documentation files found. Please check glob argument.');
+}
 
-var getFiles = (filePath, cb) => {
-  fs.readFile(filePath, 'utf-8', (err, contents) => {
-    cb(null, {name: filePath, contents: contents});
-  });
-};
-
-map(docFiles, getFiles, function(err, files){
+map(docFiles, toVFile.read, function(err, files){
   var allResults = [];
   var hasErrors = false;
   files.forEach((file) => {
     remark()
       .use(lint, {
-        'maximum-line-length': false,
-        'list-item-indent': false
+        maximumLineLength: false,
+        listItemIndent: false
       })
       .use(remark2retext, retext() // Convert markdown to plain text
         .use(readability, {age: 18, minWords: 7}) // Target age is low so that understanding requires less effort
         .use(simplify) // Check for unneccesary complexity
         .use(equality) // Check for inconsiderate language
-        .use(concise, {ignore: ['about']}) // Check for filler words to make writing more concise
+        .use(concise) // Check for filler words to make writing more concise
       )
-      .process(file.contents, function (err, results) {
-        results.filename = file.name;
+      .process(file, function (err, results) {
+
+        // Remove warnings about hedge and weasel words
+        var filteredMessages = [];
+        results.messages.forEach((message) => {
+          if (!/(hedge|weasel)/gi.test(message.ruleId)) {
+            filteredMessages.push(message);
+          }
+        });
+        results.messages = filteredMessages;
+
         allResults.push(results);
       });
   });
