@@ -17,7 +17,8 @@ var toVFile = require('to-vfile');
 var docFiles = [];
 argv._.forEach((file) => { if (!file.includes('*')) docFiles.push(file); });
 if (docFiles.length <= 0) {
-  throw new Error('No documentation files found. Please check glob argument.');
+  console.warn('No files found to lint.');
+  process.exit(1);
 }
 
 map(docFiles, toVFile.read, function(err, files){
@@ -55,7 +56,9 @@ map(docFiles, toVFile.read, function(err, files){
     remark()
       .use(lint, {
         maximumLineLength: false,
-        listItemIndent: false
+        listItemIndent: false,
+        listItemBulletIndent: false,
+        tableCellPadding: false
       })
       .use(remark2retext, retext() // Convert markdown to plain text
         .use(readability, {age: 18, minWords: 7}) // Target age is low so that understanding requires less effort
@@ -84,5 +87,5 @@ map(docFiles, toVFile.read, function(err, files){
     if (result.messages.length >= 1) hasErrors = true;
   });
 
-  if (hasErrors) throw new Error('Readability checks found issues.');
+  if (hasErrors) process.exit(1);
 });
