@@ -59,13 +59,18 @@ map(docFiles, toVFile.read, function(err, files){
       .process(file, function (err, results) {
         var filteredMessages = [];
         results.messages.forEach((message) => {
-          if (message.source == 'retext-simplify') {
-            message.ruleId = 'simplify';
-          }
           if (message.source == 'retext-equality') {
             message.ruleId = 'equality';
           }
-          message.fatal = (rules.fatal && _.includes(rules.fatal, message.ruleId));
+          if (message.source == 'retext-readability') {
+            message.ruleId = 'readability';
+          }
+          if (message.source == 'retext-simplify') {
+            message.ruleId = 'simplify';
+          }
+          if (rules.fatal && _.includes(rules.fatal, message.ruleId)) {
+            message.fatal = true;
+          }
           filteredMessages.push(message);
         });
         results.messages = filteredMessages;

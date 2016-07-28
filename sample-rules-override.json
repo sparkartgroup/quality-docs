@@ -69,6 +69,7 @@
     "no-unused-definitions",
     "ordered-list-marker-style",
     "ordered-list-marker-value",
+    "readability",
     "rule-style",
     "simplify",
     "table-pipe-alignment",
