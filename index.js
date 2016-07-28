@@ -55,9 +55,11 @@ map(docFiles, toVFile.read, function(err, files){
   files.forEach((file) => {
     remark()
       .use(lint, {
-        maximumLineLength: false,
-        listItemIndent: false,
         listItemBulletIndent: false,
+        listItemContentIndent: false,
+        listItemIndent: false,
+        listItemSpacing: false,
+        maximumLineLength: false,
         tableCellPadding: false
       })
       .use(remark2retext, retext() // Convert markdown to plain text
