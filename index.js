@@ -1,81 +1,72 @@
 #!/usr/bin/env node
-var argv = require('minimist')(process.argv.slice(2));
-var concise = require('retext-intensify');
-var equality = require('retext-equality');
-var fs = require('fs');
-var lint = require('remark-lint');
-var map = require("async/map");
-var readability = require('retext-readability');
-var remark = require('remark');
-var remark2retext = require('remark-retext');
-var report = require('vfile-reporter');
-var retext = require('retext');
-var simplify = require('retext-simplify');
-var toVFile = require('to-vfile');
+const _ = require('lodash');
+const argv = require('minimist')(process.argv.slice(2));
+const concise = require('retext-intensify');
+const equality = require('retext-equality');
+const fs = require('fs');
+const lint = require('remark-lint');
+const map = require("async/map");
+const meow = require('meow');
+const readability = require('retext-readability');
+const remark = require('remark');
+const remark2retext = require('remark-retext');
+const report = require('vfile-reporter');
+const retext = require('retext');
+const simplify = require('retext-simplify');
+const toVFile = require('to-vfile');
+
+const cli = meow(`
+    Usage
+      $ quality-docs <glob>
+
+    Options
+      -r, --rules  A JSON file to override default linting rules.
+
+    Examples
+      $ quality-docs --rules docStyle.json
+`, {
+    alias: {
+        r: 'rules'
+    }
+});
 
 // Build array of files that match input glob
 var docFiles = [];
-argv._.forEach((file) => { if (!file.includes('*')) docFiles.push(file); });
+cli.input.forEach((file) => { if (!file.includes('*')) docFiles.push(file); });
 if (docFiles.length <= 0) {
   console.warn('No files found to lint.');
   process.exit(1);
 }
 
+// Use --rules file if provided, otherwise defaults
+var rules = cli.flags.rules ? JSON.parse(
+  fs.readFileSync(cli.flags.rules, 'utf8')
+) : {};
+
 map(docFiles, toVFile.read, function(err, files){
   var allResults = [];
   var hasErrors = false;
 
-  // Commonly used words in documentation to ignore in checks
-  var wordsToIgnore = [
-    'address',
-    'attempt',
-    'capability',
-    'combined',
-    'contains',
-    'effect',
-    'expiration',
-    'function',
-    'host',
-    'hosts',
-    'initial',
-    'minimize',
-    'minimum',
-    'multiple',
-    'option',
-    'previous',
-    'require',
-    'requires',
-    'request',
-    'submit',
-    'transmit',
-    'try',
-    'type'
-  ];
-
   files.forEach((file) => {
     remark()
-      .use(lint, {
-        listItemBulletIndent: false,
-        listItemContentIndent: false,
-        listItemIndent: false,
-        listItemSpacing: false,
-        maximumLineLength: false,
-        tableCellPadding: false
-      })
+      .use(lint, rules.lint || {})
       .use(remark2retext, retext() // Convert markdown to plain text
-        .use(readability, {age: 18, minWords: 7}) // Target age is low so that understanding requires less effort
-        .use(simplify, {ignore: wordsToIgnore}) // Check for unneccesary complexity
-        .use(equality, {ignore: wordsToIgnore}) // Check for inconsiderate language
-        .use(concise) // Check for filler words to make writing more concise
+        .use(readability, rules.readability  || {})
+        .use(simplify, {ignore: rules.ignore || []})
+        .use(equality, {ignore: rules.ignore || []})
+        .use(concise, {ignore: rules.ignore || []})
       )
       .process(file, function (err, results) {
-
-        // Remove warnings about hedge and weasel words
         var filteredMessages = [];
         results.messages.forEach((message) => {
-          if (!/(hedge|weasel)/gi.test(message.ruleId)) {
-            filteredMessages.push(message);
+          if (message.source == 'retext-simplify') {
+            message.ruleId = 'simplify';
           }
+          if (message.source == 'retext-equality') {
+            message.ruleId = 'equality';
+          }
+          message.fatal = (rules.fatal && _.includes(rules.fatal, message.ruleId));
+          filteredMessages.push(message);
         });
         results.messages = filteredMessages;
 
@@ -86,7 +77,9 @@ map(docFiles, toVFile.read, function(err, files){
   console.log(report(err || allResults));
 
   allResults.forEach((result) => {
-    if (result.messages.length >= 1) hasErrors = true;
+    result.messages.forEach((message) => {
+      if (message.fatal) hasErrors = true;
+    });
   });
 
   if (hasErrors) process.exit(1);

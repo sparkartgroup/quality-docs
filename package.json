@@ -27,6 +27,8 @@
   "homepage": "https://github.com/SparkartGroupInc/quality-docs#readme",
   "dependencies": {
     "async": "^2.0.1",
+    "lodash": "^4.14.0",
+    "meow": "^3.7.0",
     "minimist": "^1.2.0",
     "remark": "^5.0.1",
     "remark-lint": "^4.0.2",
