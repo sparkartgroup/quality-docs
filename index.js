@@ -59,14 +59,9 @@ map(docFiles, toVFile.read, function(err, files){
       .process(file, function (err, results) {
         var filteredMessages = [];
         results.messages.forEach((message) => {
-          if (message.source == 'retext-equality') {
-            message.ruleId = 'equality';
-          }
-          if (message.source == 'retext-readability') {
-            message.ruleId = 'readability';
-          }
-          if (message.source == 'retext-simplify') {
-            message.ruleId = 'simplify';
+          // Make equality and simplify rules easier to flag as fatal
+          if (/(equality|simplify)/.test(message.source)) {
+            message.ruleId = message.source;
           }
           if (rules.fatal && _.includes(rules.fatal, message.ruleId)) {
             message.fatal = true;
