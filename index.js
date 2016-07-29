@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const argv = require('minimist')(process.argv.slice(2));
 const concise = require('retext-intensify');
+const control = require('remark-message-control');
 const equality = require('retext-equality');
 const fs = require('fs');
 const lint = require('remark-lint');
@@ -56,6 +57,13 @@ map(docFiles, toVFile.read, function(err, files){
         .use(equality, {ignore: rules.ignore || []})
         .use(concise, {ignore: rules.ignore || []})
       )
+      .use(control, {name: 'quality-docs', source: [
+        'remark-lint',
+        'retext-readability',
+        'retext-simplify',
+        'retext-equality',
+        'retext-intensify'
+      ]})
       .process(file, function (err, results) {
         var filteredMessages = [];
         results.messages.forEach((message) => {

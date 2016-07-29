@@ -32,6 +32,7 @@
     "minimist": "^1.2.0",
     "remark": "^5.0.1",
     "remark-lint": "^4.0.2",
+    "remark-message-control": "^2.0.2",
     "remark-retext": "^2.0.0",
     "retext": "^3.0.0",
     "retext-equality": "^2.3.2",
