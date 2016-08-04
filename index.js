@@ -17,6 +17,7 @@ const retext = require('retext');
 const simplify = require('retext-simplify');
 const spell = require('retext-spell');
 const toVFile = require('to-vfile');
+const visit = require('unist-util-visit');
 
 const cli = meow(`
     Usage
@@ -66,6 +67,17 @@ map(docFiles, toVFile.read, function(err, files){
     remark()
       .use(lint, rules.lint || {})
       .use(remark2retext, retext() // Convert markdown to plain text
+        .use(function () { // Custom function to filter the tree with workarounds
+          return function (tree) {
+            visit(tree, 'WordNode', function (node) {
+              // Remove ending punctuation marks from words before checks
+              // https://github.com/wooorm/nlcst/issues/4
+              if (node.children[node.children.length - 1].type == 'PunctuationNode') {
+                node.children.pop();
+              }
+            });
+          };
+        })
         .use(readability, rules.readability  || {})
         .use(simplify, {ignore: rules.ignore || []})
         .use(equality, {ignore: rules.ignore || []})

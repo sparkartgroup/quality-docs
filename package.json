@@ -42,6 +42,7 @@
     "retext-simplify": "^2.0.0",
     "retext-spell": "wooorm/retext-spell#6fd6492",
     "to-vfile": "^1.0.0",
+    "unist-util-visit": "^1.1.0",
     "vfile-reporter": "^2.0.1"
   }
 }
