@@ -3,6 +3,7 @@ const _ = require('lodash');
 const argv = require('minimist')(process.argv.slice(2));
 const concise = require('retext-intensify');
 const control = require('remark-message-control');
+const dictionary = require('dictionary-en-us');
 const equality = require('retext-equality');
 const fs = require('fs');
 const lint = require('remark-lint');
@@ -14,6 +15,7 @@ const remark2retext = require('remark-retext');
 const report = require('vfile-reporter');
 const retext = require('retext');
 const simplify = require('retext-simplify');
+const spell = require('retext-spell');
 const toVFile = require('to-vfile');
 
 const cli = meow(`
@@ -45,10 +47,22 @@ var rules = cli.flags.rules ? JSON.parse(
 ) : {};
 
 map(docFiles, toVFile.read, function(err, files){
-  var allResults = [];
   var hasErrors = false;
 
-  files.forEach((file) => {
+  map(files, checkFile, function(err, results) {
+    console.log(report(err || results));
+
+    // Check for errors and exit with error code if found
+    results.forEach((result) => {
+      result.messages.forEach((message) => {
+        if (message.fatal) hasErrors = true;
+      });
+    });
+    if (hasErrors) process.exit(1);
+
+  })
+
+  function checkFile(file, cb) {
     remark()
       .use(lint, rules.lint || {})
       .use(remark2retext, retext() // Convert markdown to plain text
@@ -56,6 +70,11 @@ map(docFiles, toVFile.read, function(err, files){
         .use(simplify, {ignore: rules.ignore || []})
         .use(equality, {ignore: rules.ignore || []})
         .use(concise, {ignore: rules.ignore || []})
+        .use(spell, {
+          dictionary: dictionary,
+          ignore: rules.ignore || [],
+          ignoreLiteral: true
+        })
       )
       .use(control, {name: 'quality-docs', source: [
         'remark-lint',
@@ -77,18 +96,7 @@ map(docFiles, toVFile.read, function(err, files){
           filteredMessages.push(message);
         });
         results.messages = filteredMessages;
-
-        allResults.push(results);
+        cb(null, results);
       });
-  });
-
-  console.log(report(err || allResults));
-
-  allResults.forEach((result) => {
-    result.messages.forEach((message) => {
-      if (message.fatal) hasErrors = true;
-    });
-  });
-
-  if (hasErrors) process.exit(1);
+   }
 });
