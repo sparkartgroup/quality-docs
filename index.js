@@ -31,7 +31,8 @@ const cli = meow(`
       $ quality-docs --rules docStyle.json
 `, {
     alias: {
-        r: 'rules'
+        r: 'rules',
+        i: 'ignore'
     }
 });
 
@@ -47,6 +48,26 @@ if (docFiles.length <= 0) {
 var rules = cli.flags.rules ? JSON.parse(
   fs.readFileSync(cli.flags.rules, 'utf8')
 ) : {};
+
+var ignore = cli.flags.ignore;
+
+// If --rules and --ignore are specified, update the rules with new ignore
+if (rules.ignore && ignore) {
+  var isValidString = /^[ A-Za-z0-9_@./#&+-]*$/.test(ignore);
+  var isUnique = !_.includes(rules.ignore, ignore);
+  if (isValidString && isUnique) {
+    rules.ignore.push(ignore);
+    rules.ignore.sort();
+    fs.writeFile(cli.flags.rules, JSON.stringify(rules, null, 2), function(err) {
+      if(err) {
+          return console.log(err);
+      }
+      console.log('Added \'' + ignore + '\' to ignore list. Don\'t forget to commit the changes to ' + cli.flags.rules + '.');
+    });
+  } else {
+    console.log('Could not add \'' + ignore + '\' to ignore list. Please add it manually.');
+  }
+}
 
 map(docFiles, toVFile.read, function(err, files){
   var hasErrors = false;
