@@ -16,6 +16,7 @@ const report = require('vfile-reporter');
 const retext = require('retext');
 const simplify = require('retext-simplify');
 const spell = require('retext-spell');
+const toString = require('nlcst-to-string');
 const toVFile = require('to-vfile');
 const visit = require('unist-util-visit');
 
@@ -67,21 +68,22 @@ map(docFiles, toVFile.read, function(err, files){
     remark()
       .use(lint, rules.lint || {})
       .use(remark2retext, retext() // Convert markdown to plain text
-        .use(function () { // Custom function to filter the tree with workarounds
+        .use(readability, rules.readability  || {})
+        .use(simplify, {ignore: rules.ignore || []})
+        .use(equality, {ignore: rules.ignore || []})
+        .use(concise, {ignore: rules.ignore || []})
+        .use(function () {
           return function (tree) {
             visit(tree, 'WordNode', function (node) {
-              // Remove ending punctuation marks from words before checks
-              // https://github.com/wooorm/nlcst/issues/4
+              var word = toString(node);
+              // Temporary workaround to remove ending punctuation marks from
+              // words before checks https://github.com/wooorm/nlcst/issues/4
               if (node.children[node.children.length - 1].type == 'PunctuationNode') {
                 node.children.pop();
               }
             });
           };
         })
-        .use(readability, rules.readability  || {})
-        .use(simplify, {ignore: rules.ignore || []})
-        .use(equality, {ignore: rules.ignore || []})
-        .use(concise, {ignore: rules.ignore || []})
         .use(spell, {
           dictionary: dictionary,
           ignore: rules.ignore || [],
