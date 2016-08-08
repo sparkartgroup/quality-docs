@@ -93,6 +93,30 @@ map(docFiles, toVFile.read, function(err, files){
         .use(simplify, {ignore: rules.ignore || []})
         .use(equality, {ignore: rules.ignore || []})
         .use(concise, {ignore: rules.ignore || []})
+        .use(function () {
+          return function (tree) {
+            visit(tree, 'WordNode', function (node, index, parent) {
+              var word = toString(node);
+
+              var unitArr = rules.units || ['GB', 'MB', 'KB', 'K', 'am', 'pm', 'in', 'ft'];
+              unitArr = unitArr.concat(['-', 'x']); // Add ranges and dimensions to RegExp
+              var units = unitArr.join('|');
+
+              // Ignore email addresses and the following types of non-words:
+              // 500GB, 8am-6pm, 10-11am, 1024x768, 3x5in, etc
+              var unitFilter = new RegExp('^\\d+(' + units + ')+\\d*(' + units + ')*$','i');
+              var emailFilter = new RegExp('^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$', 'i');
+              if (emailFilter.test(word) || unitFilter.test(word)) {
+                parent.children[index] = {
+                  type: 'SourceNode',
+                  value: word,
+                  position: node.position
+                };
+              }
+
+            });
+          };
+        })
         .use(spell, {
           dictionary: dictionary,
           ignore: rules.ignore || [],

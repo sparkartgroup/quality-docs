@@ -38,6 +38,9 @@ The override uses this format (without comments):
   "readability": { // Options for remark-readability
     "minWords": 7
   },
+  "units": [ // Acceptable units on the end of numbers or ranges
+    "GB", "MB", "KB", "K", "am", "pm", "in", "ft"
+  ],
   "ignore": [ // Words and phrases to ignore
     "address",
     "function",
