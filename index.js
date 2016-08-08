@@ -93,18 +93,6 @@ map(docFiles, toVFile.read, function(err, files){
         .use(simplify, {ignore: rules.ignore || []})
         .use(equality, {ignore: rules.ignore || []})
         .use(concise, {ignore: rules.ignore || []})
-        .use(function () {
-          return function (tree) {
-            visit(tree, 'WordNode', function (node) {
-              var word = toString(node);
-              // Temporary workaround to remove ending punctuation marks from
-              // words before checks https://github.com/wooorm/nlcst/issues/4
-              if (node.children[node.children.length - 1].type == 'PunctuationNode') {
-                node.children.pop();
-              }
-            });
-          };
-        })
         .use(spell, {
           dictionary: dictionary,
           ignore: rules.ignore || [],
