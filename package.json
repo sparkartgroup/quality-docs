@@ -41,7 +41,7 @@
     "retext-equality": "^2.3.2",
     "retext-intensify": "^2.0.0",
     "retext-readability": "^3.0.0",
-    "retext-simplify": "^2.0.0",
+    "retext-simplify": "SparkartGroupInc/retext-simplify#fix-ruleid",
     "retext-spell": "josiahsprague/retext-spell#exclude-digits-multiple-dictionaries",
     "to-vfile": "^1.0.0",
     "unist-util-visit": "^1.1.0",

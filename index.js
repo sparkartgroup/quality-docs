@@ -134,11 +134,9 @@ map(docFiles, toVFile.read, function(err, files){
       .process(file, function (err, results) {
         var filteredMessages = [];
         results.messages.forEach((message) => {
-          // Make equality and simplify rules easier to flag as fatal
-          if (/(equality|simplify)/.test(message.source)) {
-            message.ruleId = message.source;
-          }
-          if (rules.fatal && _.includes(rules.fatal, message.ruleId)) {
+          var hasFatalRuleId = _.includes(rules.fatal, message.ruleId);
+          var hasFatalSource = _.includes(rules.fatal, message.source);
+          if (rules.fatal && (hasFatalRuleId || hasFatalSource)) {
             message.fatal = true;
           }
           filteredMessages.push(message);
