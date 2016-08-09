@@ -12,7 +12,7 @@ npm install -g quality-docs
 
 ## Usage
 
-The CLI accepts one argument which is a glob 1024x768 of the documentation files you want to check. For example, to recursively check every `.md` file in your project;
+The CLI accepts one argument which is a glob of the documentation files you want to check. For example, to recursively check every `.md` file in your project;
 
 ```bash
 quality-docs {,**/}*.md
