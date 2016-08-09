@@ -11,7 +11,16 @@
     "age": 18,
     "minWords": 7
   },
-  "units": ["GB", "MB", "KB", "K", "am", "pm", "in", "ft"],
+  "units": [
+    "GB",
+    "MB",
+    "KB",
+    "K",
+    "am",
+    "pm",
+    "in",
+    "ft"
+  ],
   "ignore": [
     "address",
     "attempt",
@@ -29,9 +38,9 @@
     "multiple",
     "option",
     "previous",
+    "request",
     "require",
     "requires",
-    "request",
     "submit",
     "transmit",
     "try",

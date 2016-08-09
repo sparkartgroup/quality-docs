@@ -20,6 +20,10 @@ quality-docs {,**/}*.md
 
 ### Options
 
+#### Silent mode
+
+The `-s`, `--silent` flag enables silent mode which mutes warnings and only displays fatal errors.
+
 #### Rules
 
 The `-r`, `--rules` flag passes in a JSON file to override default linting rules.
@@ -56,6 +60,15 @@ The override uses this format (without comments):
 ```
 
 See [`sample-rules-override.json`](./sample-rules-override.json) for an example.
+
+#### Ignore
+
+When used along with the rules flag, the `-i`, `--ignore` flag adds a word to the rules file's ignore list. Example;
+
+```bash
+$ quality-docs {,**/}*.md --rules sample-rules-override.json --ignore irregardless
+Added 'irregardless' to ignore list. Don't forget to commit the changes to sample-rules-override.json.
+```
 
 ### Reports
 
