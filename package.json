@@ -28,6 +28,7 @@
   "dependencies": {
     "async": "^2.0.1",
     "dictionary-en-us": "^1.0.2",
+    "dictionary-sparkart": "sparkartgroupinc/dictionary-sparkart",
     "lodash": "^4.14.0",
     "meow": "^3.7.0",
     "minimist": "^1.2.0",
@@ -41,7 +42,7 @@
     "retext-intensify": "^2.0.0",
     "retext-readability": "^3.0.0",
     "retext-simplify": "^2.0.0",
-    "retext-spell": "josiahsprague/retext-spell#exclude-digits",
+    "retext-spell": "josiahsprague/retext-spell#exclude-digits-multiple-dictionaries",
     "to-vfile": "^1.0.0",
     "unist-util-visit": "^1.1.0",
     "vfile-reporter": "^2.0.1"

@@ -3,7 +3,8 @@ const _ = require('lodash');
 const argv = require('minimist')(process.argv.slice(2));
 const concise = require('retext-intensify');
 const control = require('remark-message-control');
-const dictionary = require('dictionary-en-us');
+const en_US = require('dictionary-en-us');
+const sparkart_dict = require('dictionary-sparkart');
 const equality = require('retext-equality');
 const fs = require('fs');
 const lint = require('remark-lint');
@@ -118,7 +119,7 @@ map(docFiles, toVFile.read, function(err, files){
           };
         })
         .use(spell, {
-          dictionary: dictionary,
+          dictionary: [en_US, sparkart_dict],
           ignore: rules.ignore || [],
           ignoreLiteral: true
         })
