@@ -27,15 +27,20 @@ const cli = meow(`
 
     Options
       -r, --rules  A JSON file to override default linting rules.
+      -i, --ignore  A word or phrase to ignore and add to the rules file's list.
+      -s, --silent  Silent mode. Mutes warnings and only shows fatal errors.
 
     Examples
       $ quality-docs --rules docStyle.json
 `, {
     alias: {
         r: 'rules',
-        i: 'ignore'
+        i: 'ignore',
+        s: 'silent'
     }
 });
+
+var silent = cli.flags.silent || false;
 
 // Build array of files that match input glob
 var docFiles = [];
@@ -74,7 +79,7 @@ map(docFiles, toVFile.read, function(err, files){
   var hasErrors = false;
 
   map(files, checkFile, function(err, results) {
-    console.log(report(err || results));
+    console.log(report(err || results, {silent: silent}));
 
     // Check for errors and exit with error code if found
     results.forEach((result) => {
