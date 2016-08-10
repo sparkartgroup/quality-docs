@@ -3,18 +3,23 @@ const _ = require('lodash');
 const argv = require('minimist')(process.argv.slice(2));
 const concise = require('retext-intensify');
 const control = require('remark-message-control');
+const en_US = require('dictionary-en-us');
 const equality = require('retext-equality');
 const fs = require('fs');
 const lint = require('remark-lint');
 const map = require("async/map");
 const meow = require('meow');
+const path = require('path');
 const readability = require('retext-readability');
 const remark = require('remark');
 const remark2retext = require('remark-retext');
 const report = require('vfile-reporter');
 const retext = require('retext');
 const simplify = require('retext-simplify');
+const spell = require('retext-spell');
+const toString = require('nlcst-to-string');
 const toVFile = require('to-vfile');
+const visit = require('unist-util-visit');
 
 const cli = meow(`
     Usage
@@ -22,14 +27,20 @@ const cli = meow(`
 
     Options
       -r, --rules  A JSON file to override default linting rules.
+      -i, --ignore  A word or phrase to ignore and add to the rules file's list.
+      -s, --silent  Silent mode. Mutes warnings and only shows fatal errors.
 
     Examples
       $ quality-docs --rules docStyle.json
 `, {
     alias: {
-        r: 'rules'
+        r: 'rules',
+        i: 'ignore',
+        s: 'silent'
     }
 });
+
+var silent = cli.flags.silent || false;
 
 // Build array of files that match input glob
 var docFiles = [];
@@ -44,11 +55,54 @@ var rules = cli.flags.rules ? JSON.parse(
   fs.readFileSync(cli.flags.rules, 'utf8')
 ) : {};
 
+var ignore = cli.flags.ignore;
+
+// If --rules and --ignore are specified, update the rules with new ignore
+if (rules.ignore && ignore) {
+  var isValidString = /^[ A-Za-z0-9_@./#&+-]*$/.test(ignore);
+  var isUnique = !_.includes(rules.ignore, ignore);
+  if (isValidString && isUnique) {
+    rules.ignore.push(ignore);
+    rules.ignore.sort();
+    fs.writeFile(cli.flags.rules, JSON.stringify(rules, null, 2), function(err) {
+      if(err) {
+          return console.log(err);
+      }
+      console.log('Added \'' + ignore + '\' to ignore list. Don\'t forget to commit the changes to ' + cli.flags.rules + '.');
+    });
+  } else {
+    console.log('Could not add \'' + ignore + '\' to ignore list. Please add it manually.');
+  }
+}
+
+var dictionary = en_US;
+if (rules.customDictionary && rules.customDictionary.length >= 1) {
+  dictionary = function (cb) {
+    en_US(function(err, primary) {
+      fs.readFile(path.join(process.cwd(), rules.customDictionary), function (err, customDic) {
+        cb(err, !err && {aff: primary.aff, dic: Buffer.concat([primary.dic, customDic])});
+      });
+    });
+  }
+}
+
 map(docFiles, toVFile.read, function(err, files){
-  var allResults = [];
   var hasErrors = false;
 
-  files.forEach((file) => {
+  map(files, checkFile, function(err, results) {
+    console.log(report(err || results, {silent: silent}));
+
+    // Check for errors and exit with error code if found
+    results.forEach((result) => {
+      result.messages.forEach((message) => {
+        if (message.fatal) hasErrors = true;
+      });
+    });
+    if (hasErrors) process.exit(1);
+
+  })
+
+  function checkFile(file, cb) {
     remark()
       .use(lint, rules.lint || {})
       .use(remark2retext, retext() // Convert markdown to plain text
@@ -56,6 +110,35 @@ map(docFiles, toVFile.read, function(err, files){
         .use(simplify, {ignore: rules.ignore || []})
         .use(equality, {ignore: rules.ignore || []})
         .use(concise, {ignore: rules.ignore || []})
+        .use(function () {
+          return function (tree) {
+            visit(tree, 'WordNode', function (node, index, parent) {
+              var word = toString(node);
+
+              var unitArr = rules.units || ['GB', 'MB', 'KB', 'K', 'am', 'pm', 'in', 'ft'];
+              unitArr = unitArr.concat(['-', 'x']); // Add ranges and dimensions to RegExp
+              var units = unitArr.join('|');
+
+              // Ignore email addresses and the following types of non-words:
+              // 500GB, 8am-6pm, 10-11am, 1024x768, 3x5in, etc
+              var unitFilter = new RegExp('^\\d+(' + units + ')+\\d*(' + units + ')*$','i');
+              var emailFilter = new RegExp('^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$', 'i');
+              if (emailFilter.test(word) || unitFilter.test(word)) {
+                parent.children[index] = {
+                  type: 'SourceNode',
+                  value: word,
+                  position: node.position
+                };
+              }
+
+            });
+          };
+        })
+        .use(spell, {
+          dictionary: dictionary,
+          ignore: rules.ignore || [],
+          ignoreLiteral: true
+        })
       )
       .use(control, {name: 'quality-docs', source: [
         'remark-lint',
@@ -67,28 +150,15 @@ map(docFiles, toVFile.read, function(err, files){
       .process(file, function (err, results) {
         var filteredMessages = [];
         results.messages.forEach((message) => {
-          // Make equality and simplify rules easier to flag as fatal
-          if (/(equality|simplify)/.test(message.source)) {
-            message.ruleId = message.source;
-          }
-          if (rules.fatal && _.includes(rules.fatal, message.ruleId)) {
+          var hasFatalRuleId = _.includes(rules.fatal, message.ruleId);
+          var hasFatalSource = _.includes(rules.fatal, message.source);
+          if (rules.fatal && (hasFatalRuleId || hasFatalSource)) {
             message.fatal = true;
           }
           filteredMessages.push(message);
         });
         results.messages = filteredMessages;
-
-        allResults.push(results);
+        cb(null, results);
       });
-  });
-
-  console.log(report(err || allResults));
-
-  allResults.forEach((result) => {
-    result.messages.forEach((message) => {
-      if (message.fatal) hasErrors = true;
-    });
-  });
-
-  if (hasErrors) process.exit(1);
+   }
 });

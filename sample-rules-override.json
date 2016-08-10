@@ -1,4 +1,5 @@
 {
+  "customDictionary": "sample.dic",
   "lint": {
     "list-item-indent": false,
     "maximum-line-length": false,
@@ -11,6 +12,16 @@
     "age": 18,
     "minWords": 7
   },
+  "units": [
+    "GB",
+    "MB",
+    "KB",
+    "K",
+    "am",
+    "pm",
+    "in",
+    "ft"
+  ],
   "ignore": [
     "address",
     "attempt",
@@ -28,9 +39,9 @@
     "multiple",
     "option",
     "previous",
+    "request",
     "require",
     "requires",
-    "request",
     "submit",
     "transmit",
     "try",
@@ -72,6 +83,7 @@
     "retext-readability",
     "retext-simplify",
     "rule-style",
+    "spelling",
     "table-pipe-alignment",
     "table-pipes",
     "unordered-list-marker-style"

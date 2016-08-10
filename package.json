@@ -27,9 +27,11 @@
   "homepage": "https://github.com/SparkartGroupInc/quality-docs#readme",
   "dependencies": {
     "async": "^2.0.1",
+    "dictionary-en-us": "^1.0.2",
     "lodash": "^4.14.0",
     "meow": "^3.7.0",
     "minimist": "^1.2.0",
+    "nlcst-to-string": "^2.0.0",
     "remark": "^5.0.1",
     "remark-lint": "^4.0.2",
     "remark-message-control": "^2.0.2",
@@ -38,8 +40,10 @@
     "retext-equality": "^2.3.2",
     "retext-intensify": "^2.0.0",
     "retext-readability": "^3.0.0",
-    "retext-simplify": "^2.0.0",
+    "retext-simplify": "^3.0.0",
+    "retext-spell": "wooorm/retext-spell#9e2c9a9",
     "to-vfile": "^1.0.0",
+    "unist-util-visit": "^1.1.0",
     "vfile-reporter": "^2.0.1"
   }
 }
