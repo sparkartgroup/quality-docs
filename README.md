@@ -22,7 +22,7 @@ quality-docs {,**/}*.md
 
 #### Silent mode
 
-The `-s`, `--silent` flag enables silent mode which mutes warnings and only displays fatal errors.
+The `-s`, `--silent` flag enables silent mode which mutes warnings. Fatal errors are displayed in silent mode.
 
 #### Rules
 
@@ -36,6 +36,7 @@ The override uses this format (without comments):
 
 ```js
 {
+  "customDictionary": "sample.dic",
   "lint": { // Options for remark-lint rules
     "list-item-indent": false
   },
@@ -78,6 +79,10 @@ The tool prints a report of writing quality issues with their location and descr
 README.md
   23:9-23:16   warning  Replace “utilize” with “use”
 ```
+
+### Custom Dictionary
+
+By default, `quality-docs` spell checks documents against [a US English dictionary](https://github.com/wooorm/dictionaries/dictionaries/en_US). To extend the built in dictionary with custom English terms related to your project(s), add a [hunspell format](http://linux.die.net/man/4/hunspell) `.dic` file to your project, and reference it with the `customDictionary` key in the rules override JSON file. See [`sample.dic`](./sample.dic) for an example. (Note: `quality-docs` uses the [US English affix file](https://github.com/wooorm/dictionaries/blob/master/dictionaries/en_US/index.aff) to check for valid variants of dictionary words. Non-English characters or prefix/suffix rules are not supported.)
 
 ### Changing Default Rules
 

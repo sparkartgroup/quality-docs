@@ -1,4 +1,5 @@
 {
+  "customDictionary": "sample.dic",
   "lint": {
     "list-item-indent": false,
     "maximum-line-length": false,

@@ -4,12 +4,12 @@ const argv = require('minimist')(process.argv.slice(2));
 const concise = require('retext-intensify');
 const control = require('remark-message-control');
 const en_US = require('dictionary-en-us');
-const sparkart_dict = require('dictionary-sparkart');
 const equality = require('retext-equality');
 const fs = require('fs');
 const lint = require('remark-lint');
 const map = require("async/map");
 const meow = require('meow');
+const path = require('path');
 const readability = require('retext-readability');
 const remark = require('remark');
 const remark2retext = require('remark-retext');
@@ -75,6 +75,17 @@ if (rules.ignore && ignore) {
   }
 }
 
+var dictionary = en_US;
+if (rules.customDictionary && rules.customDictionary.length >= 1) {
+  dictionary = function (cb) {
+    en_US(function(err, primary){
+      fs.readFile(path.join(__dirname, rules.customDictionary), function (err, customDic) {
+        cb(err, !err && {aff: primary.aff, dic: Buffer.concat([primary.dic, customDic])});
+      });
+    });
+  }
+}
+
 map(docFiles, toVFile.read, function(err, files){
   var hasErrors = false;
 
@@ -124,7 +135,7 @@ map(docFiles, toVFile.read, function(err, files){
           };
         })
         .use(spell, {
-          dictionary: [en_US, sparkart_dict],
+          dictionary: dictionary,
           ignore: rules.ignore || [],
           ignoreLiteral: true
         })
