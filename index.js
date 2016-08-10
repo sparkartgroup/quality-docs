@@ -78,8 +78,8 @@ if (rules.ignore && ignore) {
 var dictionary = en_US;
 if (rules.customDictionary && rules.customDictionary.length >= 1) {
   dictionary = function (cb) {
-    en_US(function(err, primary){
-      fs.readFile(path.join(__dirname, rules.customDictionary), function (err, customDic) {
+    en_US(function(err, primary) {
+      fs.readFile(path.join(process.cwd(), rules.customDictionary), function (err, customDic) {
         cb(err, !err && {aff: primary.aff, dic: Buffer.concat([primary.dic, customDic])});
       });
     });
