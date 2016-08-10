@@ -41,7 +41,7 @@
     "retext-intensify": "^2.0.0",
     "retext-readability": "^3.0.0",
     "retext-simplify": "^3.0.0",
-    "retext-spell": "josiahsprague/retext-spell#exclude-digits",
+    "retext-spell": "wooorm/retext-spell#9e2c9a9",
     "to-vfile": "^1.0.0",
     "unist-util-visit": "^1.1.0",
     "vfile-reporter": "^2.0.1"
