@@ -1,18 +1,26 @@
 # `quality-docs`
 
+![Screenshot](./screenshot.png)
+
 > A CLI tool to check the quality of writing in your project's markdown or plain text documentation.
+
+This tool uses [`retext`](https://github.com/wooorm/retext) to check the quality of writing in your project's documentation using these plugins;
+
+- [`retext-equality`](https://github.com/wooorm/retext-equality) warns on insensitive, inconsiderate language.
+- [`retext-intensify`](https://github.com/wooorm/retext-intensify) warns on filler, weasel and hedge words.
+- [`remark-lint`](https://github.com/wooorm/remark-lint) checks for proper markdown formatting.
+- [`retext-readability`](https://github.com/wooorm/retext-readability) checks the reading level of the whole document.
+- [`retext-simplify`](https://github.com/wooorm/retext-simplify) warns on complicated phrases.
+- [`retext-spell`](https://github.com/wooorm/retext-spell) checks spelling against a US English dictionary and [custom dictionary](#custom-dictionary).
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
-
   - [Options](#options)
   - [Reports](#reports)
   - [Custom Dictionary](#custom-dictionary)
   - [Changing Default Rules](#changing-default-rules)
-
-- [Writing Standards](#writing-standards)
 - [Troubleshooting](#troubleshooting)
 - [Contribute](#contribute)
 - [License](#license)
@@ -34,8 +42,6 @@ The CLI accepts one argument which is a glob of the documentation files you want
 ```bash
 quality-docs {,**/}*.md
 ```
-
-![Screenshot](./screenshot.png)
 
 #### Silent Mode
 
@@ -69,15 +75,16 @@ The override uses this format (without comments):
     "host",
     "submit"
   ],
-  "fatal": [ // Rules to mark as fatal errors
-    "equality",
+  "fatal": [ // Rule names or retext plugin names to mark as fatal errors
     "no-tabs",
-    "simplify"
+    "retext-equality",
+    "retext-simplify",
+    "spelling"
   ]
 }
 ```
 
-See [`sample-rules-override.json`](https://github.com/SparkartGroupInc/quality-docs/blob/master/sample-rules-override.json) for an example.
+See [`sample-rules-override.json`](https://github.com/SparkartGroupInc/quality-docs/blob/master/sample-rules-override.json) for a sensible set of rules (which this project itself is checked against).
 
 #### Ignore
 
@@ -103,22 +110,11 @@ By default, `quality-docs` spell checks documents against [a US English dictiona
 
 ### Changing Default Rules
 
-`quality-docs` ships with an opinionated set of rules to improve your writing and we recommend  you use the defaults. If you want to make an exception, you have three options;
+The `quality-docs` CLI ships with an opinionated set of rules to improve your writing. If you want to override the defaults of [the `retext` plugins used by this tool](#quality-docs), we recommend one of these three options;
 
 1. [Exclude documentation files from the glob argument](http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm#STANDARD-WILDCARDS).
 2. Use [the `--rules` flag](#rules) to pass in a JSON file with rule overrides.
 3. Use [`remark-message-control` marks](https://github.com/wooorm/remark-message-control) to turn on/off specific rules for individual documents or text nodes.
-
-## Writing Standards
-
-This tool uses [`retext`](https://github.com/wooorm/retext) to check the quality of writing in your project's documentation using these plugins;
-
-- [`retext-equality`](https://github.com/wooorm/retext-equality) warns on insensitive, inconsiderate language.
-- [`retext-intensify`](https://github.com/wooorm/retext-intensify) warns on filler, weasel and hedge words.
-- [`remark-lint`](https://github.com/wooorm/remark-lint) checks for proper markdown formatting.
-- [`retext-readability`](https://github.com/wooorm/retext-readability) checks the reading level of the whole document.
-- [`retext-simplify`](https://github.com/wooorm/retext-simplify) warns on complicated phrases.
-- [`retext-spell`](https://github.com/wooorm/retext-spell) checks spelling against a US English dictionary and [custom dictionary](#custom-dictionary).
 
 ## Troubleshooting
 
@@ -146,4 +142,4 @@ Here is a list of common confusing issues `quality-docs` flags, and how to resol
 
 ## License
 
-MIT &copy; 2016 Sparkart Group Inc.
+[MIT &copy; 2016 Sparkart Group Inc.](./LICENSE)
