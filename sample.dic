@@ -27,6 +27,7 @@ SES
 SFTP
 SLA/S
 SMS/S
+Sparkart/S
 SSH
 SSL
 SSO
@@ -39,6 +40,7 @@ WordPress/M
 ad-hoc
 am/c
 analytic/S
+backtick/SD
 balancer/S
 boolean/S
 buildpack/S
@@ -53,6 +55,7 @@ hostname/S
 hunspell
 initial
 js
+lint/R
 lookup/S
 metadata
 nameserver/S

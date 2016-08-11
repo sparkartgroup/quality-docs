@@ -2,6 +2,7 @@
   "customDictionary": "sample.dic",
   "lint": {
     "list-item-indent": false,
+    "list-item-spacing": false,
     "maximum-line-length": false,
     "no-file-name-articles": false,
     "no-file-name-consecutive-dashes": false,
