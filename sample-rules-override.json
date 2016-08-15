@@ -8,7 +8,7 @@
     "no-file-name-consecutive-dashes": false,
     "no-file-name-mixed-case": false,
     "no-file-name-outer-dashes": false,
-    "no-missing-blank-lines": false
+    "no-missing-blank-lines": { "exceptTightLists": true }
   },
   "readability": {
     "age": 18,

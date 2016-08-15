@@ -33,7 +33,7 @@
     "minimist": "^1.2.0",
     "nlcst-to-string": "^2.0.0",
     "remark": "^5.0.1",
-    "remark-lint": "^4.0.2",
+    "remark-lint": "^4.2.0",
     "remark-message-control": "^2.0.2",
     "remark-retext": "^2.0.0",
     "retext": "^3.0.0",
