@@ -49,6 +49,11 @@
     "try",
     "type"
   ],
+  "suggestions": [
+    "weasel",
+    "hedge",
+    "filler"
+  ],
   "fatal": [
     "blockquote-indentation",
     "checkbox-character-style",

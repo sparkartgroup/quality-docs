@@ -75,6 +75,11 @@ The override uses this format (without comments):
     "host",
     "submit"
   ],
+  "suggestions": [ // Rule names or retext plugin names to show suggestions, but not warn
+    "hedge",
+    "weasel",
+    "filler"
+  ],
   "fatal": [ // Rule names or retext plugin names to mark as fatal errors
     "no-tabs",
     "retext-equality",

@@ -152,9 +152,20 @@ map(docFiles, toVFile.read, function(err, files){
         results.messages.forEach((message) => {
           var hasFatalRuleId = _.includes(rules.fatal, message.ruleId);
           var hasFatalSource = _.includes(rules.fatal, message.source);
+          var hasSuggestedRuleId = _.includes(rules.suggestions, message.ruleId);
+          var hasSuggestedSource = _.includes(rules.suggestions, message.source);
+
+          if (rules.suggestions && (hasSuggestedRuleId || hasSuggestedSource)) {
+            message.message = message.message.replace( /don\’t use “(.*)”/ig, (match, word) => {
+              return 'Use “' +  word + '” sparingly';
+            });
+            delete message.fatal;
+          }
+
           if (rules.fatal && (hasFatalRuleId || hasFatalSource)) {
             message.fatal = true;
           }
+
           filteredMessages.push(message);
         });
         results.messages = filteredMessages;
