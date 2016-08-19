@@ -49,17 +49,17 @@ The `-s`, `--silent` flag enables silent mode which mutes warnings. Fatal errors
 
 #### Rules
 
-The `-r`, `--rules` flag passes in a JSON file to override default linting rules.
+The `-r`, `--rules` flag passes in a JSON file to override default linting rules. Rules are combined with default-rules.json and custom rules take precedence over the defaults.
 
 ```bash
-quality-docs {,**/}*.md --rules sample-rules-override.json
+quality-docs {,**/}*.md --rules default-rules.json
 ```
 
 The override uses this format (without comments):
 
 ```js
 {
-  "customDictionary": "sample.dic",
+  "customDictionary": "en_US-tech-industry.dic",
   "lint": { // Options for remark-lint rules
     "list-item-indent": false
   },
@@ -89,15 +89,15 @@ The override uses this format (without comments):
 }
 ```
 
-See [`sample-rules-override.json`](https://github.com/SparkartGroupInc/quality-docs/blob/master/sample-rules-override.json) for a sensible set of rules (which this project itself is checked against).
+See [`default-rules.json`](https://github.com/SparkartGroupInc/quality-docs/blob/master/default-rules.json) for a sensible set of rules (which this project itself is checked against).
 
 #### Ignore
 
 When used along with the rules flag, the `-i`, `--ignore` flag adds a word to the rules file's ignore list. Example;
 
 ```bash
-$ quality-docs {,**/}*.md --rules sample-rules-override.json --ignore irregardless
-Added 'irregardless' to ignore list. Don't forget to commit the changes to sample-rules-override.json.
+$ quality-docs {,**/}*.md --rules default-rules.json --ignore irregardless
+Added 'irregardless' to ignore list. Don't forget to commit the changes to default-rules.json.
 ```
 
 ### Reports
@@ -111,7 +111,7 @@ README.md
 
 ### Custom Dictionary
 
-By default, `quality-docs` spell checks documents against [a US English dictionary](https://github.com/wooorm/dictionaries/dictionaries/en_US). To extend the built in dictionary with custom English terms related to your project(s), add a [hunspell format](http://linux.die.net/man/4/hunspell) `.dic` file to your project, and reference it with the `customDictionary` key in the rules override JSON file. See [`sample.dic`](./sample.dic) for an example. (Note: `quality-docs` uses the [US English affix file](https://github.com/wooorm/dictionaries/blob/master/dictionaries/en_US/index.aff) to check for valid variants of dictionary words. Non-English characters or prefix/suffix rules are not supported.)
+By default, `quality-docs` spell checks documents against [a US English dictionary](https://github.com/wooorm/dictionaries/dictionaries/en_US). To extend the built in dictionary with custom English terms related to your project(s), add a [hunspell format](http://linux.die.net/man/4/hunspell) `.dic` file to your project, and reference it with the `customDictionary` key in the rules override JSON file. See [`en_US-tech-industry.dic`](./en_US-tech-industry.dic) for an example. (Note: `quality-docs` uses the [US English affix file](https://github.com/wooorm/dictionaries/blob/master/dictionaries/en_US/index.aff) to check for valid variants of dictionary words. Non-English characters or prefix/suffix rules are not supported.)
 
 ### Changing Default Rules
 

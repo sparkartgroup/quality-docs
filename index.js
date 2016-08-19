@@ -31,7 +31,7 @@ const cli = meow(`
       -s, --silent  Silent mode. Mutes warnings and only shows fatal errors.
 
     Examples
-      $ quality-docs --rules docStyle.json
+      $ quality-docs --rules custom-rules.json
 `, {
     alias: {
         r: 'rules',
@@ -51,36 +51,72 @@ if (docFiles.length <= 0) {
 }
 
 // Use --rules file if provided, otherwise defaults
-var rules = cli.flags.rules ? JSON.parse(
-  fs.readFileSync(cli.flags.rules, 'utf8')
-) : {};
+var rules = {};
+var customRules = {};
+var defaultRules = require('./default-rules.json');
 
-var ignore = cli.flags.ignore;
+defaultRules.dictionaries.forEach((dictPath, index, arr) => {
+  arr[index] = path.join(__dirname, dictPath);
+});
 
-// If --rules and --ignore are specified, update the rules with new ignore
-if (rules.ignore && ignore) {
-  var isValidString = /^[ A-Za-z0-9_@./#&+-]*$/.test(ignore);
-  var isUnique = !_.includes(rules.ignore, ignore);
-  if (isValidString && isUnique) {
-    rules.ignore.push(ignore);
-    rules.ignore.sort();
-    fs.writeFile(cli.flags.rules, JSON.stringify(rules, null, 2), function(err) {
-      if(err) {
-          return console.log(err);
-      }
-      console.log('Added \'' + ignore + '\' to ignore list. Don\'t forget to commit the changes to ' + cli.flags.rules + '.');
-    });
-  } else {
-    console.log('Could not add \'' + ignore + '\' to ignore list. Please add it manually.');
+if (cli.flags.rules) {
+  customRules = JSON.parse(fs.readFileSync(cli.flags.rules, 'utf8'));
+
+  // If --rules and --ignore are specified, update the rules with new ignore
+  if (customRules.ignore && cli.flags.ignore) {
+    var isValidString = /^[ A-Za-z0-9_@./#&+-]*$/.test(cli.flags.ignore);
+    var isUnique = !_.includes(customRules.ignore, cli.flags.ignore);
+    if (isValidString && isUnique) {
+      customRules.ignore.push(cli.flags.ignore);
+      customRules.ignore.sort();
+      fs.writeFile(cli.flags.rules, JSON.stringify(rules, null, 2), function(err) {
+        if(err) {
+            return console.log(err);
+        }
+        console.log('Added \'' + cli.flags.ignore + '\' to ignore list. Don\'t forget to commit the changes to ' + cli.flags.rules + '.');
+      });
+    } else {
+      console.log('Could not add \'' + cli.flags.ignore + '\' to ignore list. Please add it manually.');
+    }
   }
+
+  // Convert dictionaries string to an array
+  var customDict = customRules.dictionaries;
+  if (typeof customDict === 'string' || customDict instanceof String) {
+    customRules.dictionaries = [customDict];
+  }
+
+  // Add cwd to custom dictionary paths
+  customRules.dictionaries.forEach((dictionaryPath) => {
+    dictionaryPath = process.cwd() + dictionaryPath;
+  });
+
+  // Merge default and custom rules, preferring customRules and concating arrays
+  rules = _.mergeWith(customRules, defaultRules, (objValue, srcValue)=>{
+    if (_.isArray(objValue)) {
+      return _.uniq(objValue.concat(srcValue));
+    }
+  });
+
+} else {
+  rules = defaultRules;
 }
 
 var dictionary = en_US;
-if (rules.customDictionary && rules.customDictionary.length >= 1) {
+
+var myReadFile = function (dictPath, cb) {
+  fs.readFile(dictPath, function (err, buffer) {
+    cb(err, !err && buffer);
+  });
+}
+
+if (rules.dictionaries && rules.dictionaries.length >= 1) {
   dictionary = function (cb) {
     en_US(function(err, primary) {
-      fs.readFile(path.join(process.cwd(), rules.customDictionary), function (err, customDic) {
-        cb(err, !err && {aff: primary.aff, dic: Buffer.concat([primary.dic, customDic])});
+      map(rules.dictionaries, myReadFile, function(err, results){
+        results.unshift(primary.dic);
+        var combinedDictionaries = Buffer.concat(results);
+        cb(err, !err && {aff: primary.aff, dic: combinedDictionaries});
       });
     });
   }

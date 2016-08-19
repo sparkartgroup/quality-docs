@@ -1,5 +1,5 @@
 {
-  "customDictionary": "sample.dic",
+  "dictionaries": ["en_US-tech-industry.dic"],
   "lint": {
     "list-item-indent": false,
     "list-item-spacing": false,
@@ -61,7 +61,6 @@
     "code-block-style",
     "definition-spacing",
     "fenced-code-marker",
-    "filler",
     "final-definition",
     "final-newline",
     "first-heading-level",
