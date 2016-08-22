@@ -29,6 +29,7 @@ const cli = meow(`
       -r, --rules  A JSON file to override default linting rules.
       -i, --ignore  A word or phrase to ignore and add to the rules file's list.
       -s, --silent  Silent mode. Mutes warnings and only shows fatal errors.
+      -v, --verbose Prints which rules are used.
 
     Examples
       $ quality-docs --rules custom-rules.json
@@ -36,7 +37,8 @@ const cli = meow(`
     alias: {
         r: 'rules',
         i: 'ignore',
-        s: 'silent'
+        s: 'silent',
+        v: 'verbose'
     }
 });
 
@@ -101,6 +103,8 @@ if (cli.flags.rules) {
 } else {
   rules = defaultRules;
 }
+
+if (cli.flags.verbose) console.log('Using these rules:', rules);
 
 var dictionary = en_US;
 
