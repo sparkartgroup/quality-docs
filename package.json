@@ -7,7 +7,7 @@
     "quality-docs": "./index.js"
   },
   "scripts": {
-    "test": "node index.js {,**/}*.md --rules sample-rules-override.json"
+    "test": "node index.js {,**/}*.md --config default-config.json"
   },
   "repository": {
     "type": "git",
