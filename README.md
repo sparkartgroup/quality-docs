@@ -20,7 +20,7 @@ This tool uses [`retext`](https://github.com/wooorm/retext) to check the quality
   - [Options](#options)
   - [Reports](#reports)
   - [Custom Dictionary](#custom-dictionary)
-  - [Changing Default Rules](#changing-default-rules)
+  - [Changing Default Config](#changing-default-config)
 - [Troubleshooting](#troubleshooting)
 - [Contribute](#contribute)
 - [License](#license)
@@ -47,57 +47,54 @@ quality-docs {,**/}*.md
 
 The `-s`, `--silent` flag enables silent mode which mutes warnings. Fatal errors are displayed in silent mode.
 
-#### Rules
+#### Config
 
-The `-r`, `--rules` flag passes in a JSON file to override default linting rules.
+The `-c`, `--config` flag passes in a JSON file with a custom config. The config is combined with `default-config.json` and the custom config overrides the defaults.
 
 ```bash
-quality-docs {,**/}*.md --rules sample-rules-override.json
+quality-docs {,**/}*.md --config custom-config.json
 ```
 
 The override uses this format (without comments):
 
 ```js
+
 {
-  "customDictionary": "sample.dic",
-  "lint": { // Options for remark-lint rules
-    "list-item-indent": false
+  "dictionaries": "sparkart.dic", // Path to custom dictionary file, relative to config file
+  "rules": { // Turn rules on/off or change their severity
+    "filler": {"severity": "warn"},
+    "hedge": {"severity": "suggest"},
+    "list-item-content-indent": false,
+    "no-auto-link-without-protocol": false,
+    "retext-readability": {
+      "age": 18,
+      "minWords": 7,
+      "severity": "fatal"
+    },
+    "weasel": {"severity": "suggest"}
   },
-  "readability": { // Options for remark-readability
-    "minWords": 7
-  },
-  "units": [ // Acceptable units on the end of numbers or ranges
-    "GB", "MB", "KB", "K", "am", "pm", "in", "ft"
+  "ignore": [ // Words or phrases to ignore
+    "can",
+    "forward",
+    "found",
+    "start",
+    "started",
+    "up"
   ],
-  "ignore": [ // Words and phrases to ignore
-    "address",
-    "function",
-    "host",
-    "submit"
-  ],
-  "suggestions": [ // Rule names or retext plugin names to show suggestions, but not warn
-    "hedge",
-    "weasel",
-    "filler"
-  ],
-  "fatal": [ // Rule names or retext plugin names to mark as fatal errors
-    "no-tabs",
-    "retext-equality",
-    "retext-simplify",
-    "spelling"
+  "noIgnore": [ // Words or phrases ignored by default to not ignore
+    "require",
+    "transmit"
   ]
 }
 ```
 
-See [`sample-rules-override.json`](https://github.com/SparkartGroupInc/quality-docs/blob/master/sample-rules-override.json) for a sensible set of rules (which this project itself is checked against).
-
 #### Ignore
 
-When used along with the rules flag, the `-i`, `--ignore` flag adds a word to the rules file's ignore list. Example;
+When used along with the config flag, the `-i`, `--ignore` flag adds a word to the config file's ignore list. Example;
 
 ```bash
-$ quality-docs {,**/}*.md --rules sample-rules-override.json --ignore irregardless
-Added 'irregardless' to ignore list. Don't forget to commit the changes to sample-rules-override.json.
+$ quality-docs {,**/}*.md --config custom-config.json --ignore irregardless
+Added 'irregardless' to ignore list. Don't forget to commit the changes to custom-config.json.
 ```
 
 ### Reports
@@ -111,14 +108,14 @@ README.md
 
 ### Custom Dictionary
 
-By default, `quality-docs` spell checks documents against [a US English dictionary](https://github.com/wooorm/dictionaries/dictionaries/en_US). To extend the built in dictionary with custom English terms related to your project(s), add a [hunspell format](http://linux.die.net/man/4/hunspell) `.dic` file to your project, and reference it with the `customDictionary` key in the rules override JSON file. See [`sample.dic`](./sample.dic) for an example. (Note: `quality-docs` uses the [US English affix file](https://github.com/wooorm/dictionaries/blob/master/dictionaries/en_US/index.aff) to check for valid variants of dictionary words. Non-English characters or prefix/suffix rules are not supported.)
+By default, `quality-docs` spell checks documents against [a US English dictionary](https://github.com/wooorm/dictionaries/dictionaries/en_US). To extend the built in dictionary with custom English terms related to your project(s), add a [hunspell format](http://linux.die.net/man/4/hunspell) `.dic` file to your project, and reference it with the `customDictionary` key in a custom config JSON file. See [`en_US-tech-industry.dic`](./en_US-tech-industry.dic) for an example. (Note: `quality-docs` uses the [US English affix file](https://github.com/wooorm/dictionaries/blob/master/dictionaries/en_US/index.aff) to check for valid variants of dictionary words. Non-English characters or prefix/suffix rules are not supported.)
 
-### Changing Default Rules
+### Changing Default Config
 
-The `quality-docs` CLI ships with an opinionated set of rules to improve your writing. If you want to override the defaults of [the `retext` plugins used by this tool](#quality-docs), we recommend one of these three options;
+The `quality-docs` CLI ships with an opinionated configuration to improve your writing. If you want to override the defaults of [the `retext` plugins used by this tool](#quality-docs), we recommend one of these three options;
 
 1. [Exclude documentation files from the glob argument](http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm#STANDARD-WILDCARDS).
-2. Use [the `--rules` flag](#rules) to pass in a JSON file with rule overrides.
+2. Use [the `--config` flag](#config) to pass in a JSON file with default configuration overrides.
 3. Use [`remark-message-control` marks](https://github.com/wooorm/remark-message-control) to turn on/off specific rules for individual documents or text nodes.
 
 ## Troubleshooting
@@ -127,7 +124,7 @@ Here is a list of common confusing issues `quality-docs` flags, and how to resol
 
 ### Names are flagged as misspelled
 
-  If it's a common name, add it to a [custom dictionary](#custom-dictionary). If it isn't common or you don't want to add it to the dictionary, [add it to the `ignore` array in a rules override file](#rules).
+  If it's a common name, add it to a [custom dictionary](#custom-dictionary). If it isn't common or you don't want to add it to the dictionary, [add it to the `ignore` array in a config override file](#config).
 
 ### Other non-dictionary terms are flagged as misspelled
 
@@ -139,7 +136,7 @@ Here is a list of common confusing issues `quality-docs` flags, and how to resol
 
 ### Another issue is being incorrectly flagged
 
-  Try using [the methods provided to change the default rules](#changing-default-rules) to suit your preferences. If custom rules don't resolve the problem, [file an issue](https://github.com/SparkartGroupInc/quality-docs/issues) including the text of the markdown file you're checking and the error you're seeing in the output.
+  Try using [the methods provided to change the default config](#changing-default-config) to suit your preferences. If custom config doesn't resolve the problem, [file an issue](https://github.com/SparkartGroupInc/quality-docs/issues) including the text of the markdown file you're checking and the error you're seeing in the output.
 
 ## Contribute
 

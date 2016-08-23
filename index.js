@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const _ = require('lodash');
 const argv = require('minimist')(process.argv.slice(2));
+const chalk = require('chalk');
 const concise = require('retext-intensify');
 const control = require('remark-message-control');
 const en_US = require('dictionary-en-us');
@@ -26,17 +27,19 @@ const cli = meow(`
       $ quality-docs <glob>
 
     Options
-      -r, --rules  A JSON file to override default linting rules.
-      -i, --ignore  A word or phrase to ignore and add to the rules file's list.
+      -c, --config  A JSON config file to override default linting rules.
+      -i, --ignore  A word or phrase to ignore and add to the config file's list.
       -s, --silent  Silent mode. Mutes warnings and only shows fatal errors.
+      -v, --verbose Prints which config is used.
 
     Examples
-      $ quality-docs --rules docStyle.json
+      $ quality-docs --config custom-config.json
 `, {
     alias: {
-        r: 'rules',
+        c: 'config',
         i: 'ignore',
-        s: 'silent'
+        s: 'silent',
+        v: 'verbose'
     }
 });
 
@@ -50,40 +53,109 @@ if (docFiles.length <= 0) {
   process.exit(1);
 }
 
-// Use --rules file if provided, otherwise defaults
-var rules = cli.flags.rules ? JSON.parse(
-  fs.readFileSync(cli.flags.rules, 'utf8')
-) : {};
+// Use --config file if provided, otherwise defaults
+var config = {};
+var customConfig = {};
+var defaultConfig = require('./default-config.json');
 
-var ignore = cli.flags.ignore;
+defaultConfig.dictionaries.forEach((dictPath, index, arr) => {
+  arr[index] = path.join(__dirname, dictPath);
+});
 
-// If --rules and --ignore are specified, update the rules with new ignore
-if (rules.ignore && ignore) {
-  var isValidString = /^[ A-Za-z0-9_@./#&+-]*$/.test(ignore);
-  var isUnique = !_.includes(rules.ignore, ignore);
-  if (isValidString && isUnique) {
-    rules.ignore.push(ignore);
-    rules.ignore.sort();
-    fs.writeFile(cli.flags.rules, JSON.stringify(rules, null, 2), function(err) {
-      if(err) {
-          return console.log(err);
-      }
-      console.log('Added \'' + ignore + '\' to ignore list. Don\'t forget to commit the changes to ' + cli.flags.rules + '.');
-    });
-  } else {
-    console.log('Could not add \'' + ignore + '\' to ignore list. Please add it manually.');
+
+if (!cli.flags.config) {
+  config = defaultConfig;
+} else {
+  customConfig = JSON.parse(fs.readFileSync(cli.flags.config, 'utf8'));
+
+  // If --config and --ignore are specified, update the config with new ignore
+  if (customConfig.ignore && cli.flags.ignore) {
+    var isValidString = /^[ A-Za-z0-9_@./#&+-]*$/.test(cli.flags.ignore);
+    var isUnique = !_.includes(customConfig.ignore, cli.flags.ignore);
+    if (isValidString && isUnique) {
+      customConfig.ignore.push(cli.flags.ignore);
+      customConfig.ignore.sort();
+      fs.writeFile(cli.flags.rules, JSON.stringify(rules, null, 2), function(err) {
+        if(err) {
+            return console.log(err);
+        }
+        console.log('Added \'' + cli.flags.ignore + '\' to ignore list. Don\'t forget to commit the changes to ' + cli.flags.config + '.');
+      });
+    } else {
+      console.log('Could not add \'' + cli.flags.ignore + '\' to ignore list. Please add it manually.');
+    }
   }
+
+  // Convert dictionaries string to an array
+  var customDict = customConfig.dictionaries;
+  if (typeof customDict === 'string' || customDict instanceof String) {
+    customConfig.dictionaries = [customDict];
+  }
+
+  // Add cwd to custom dictionary paths
+  customConfig.dictionaries.forEach((dictionaryPath) => {
+    dictionaryPath = process.cwd() + dictionaryPath;
+  });
+
+  // Merge default and custom rules, preferring customRules and concating arrays
+  config = _.mergeWith(defaultConfig, customConfig, (objValue, srcValue)=>{
+    if (_.isArray(objValue)) {
+      return _.uniq(objValue.concat(srcValue));
+    }
+  });
+
 }
 
 var dictionary = en_US;
-if (rules.customDictionary && rules.customDictionary.length >= 1) {
+
+var myReadFile = function (dictPath, cb) {
+  fs.readFile(dictPath, function (err, buffer) {
+    cb(err, !err && buffer);
+  });
+}
+
+if (config.dictionaries && config.dictionaries.length >= 1) {
   dictionary = function (cb) {
     en_US(function(err, primary) {
-      fs.readFile(path.join(process.cwd(), rules.customDictionary), function (err, customDic) {
-        cb(err, !err && {aff: primary.aff, dic: Buffer.concat([primary.dic, customDic])});
+      map(config.dictionaries, myReadFile, function(err, results){
+        results.unshift(primary.dic);
+        var combinedDictionaries = Buffer.concat(results);
+        cb(err, !err && {aff: primary.aff, dic: combinedDictionaries});
       });
     });
   }
+}
+
+var lintRules = _.mapValues(config.rules, (value)=>{
+  var keys = Object.keys(value);
+  if (_.isBoolean(value)) return value;
+  if (value.hasOwnProperty('severity')) {
+    if (Object.keys(value).length == 1) return true;
+    var newValue = {};
+    for (var prop in value) {
+      if (prop !== 'severity') newValue[prop] = value[prop];
+    }
+    return newValue;
+  }
+  return value;
+});
+var fatalRules = _.keys(_.pickBy(config.rules, function(value) {
+  return value.severity == 'fatal';
+}));
+var warnRules = _.keys(_.pickBy(config.rules, function(value) {
+  return (value && (value.severity == 'warn' || !value.severity));
+}));
+var suggestRules = _.keys(_.pickBy(config.rules, function(value) {
+  return value.severity == 'suggest';
+}));
+var readabilityConfig = config.rules['retext-readability'];
+var ignoreWords = _.difference(config.ignore, config.noIgnore);
+
+if (cli.flags.verbose) {
+  console.log(chalk.red.underline('Fatal rules:\n'), chalk.red(fatalRules));
+  console.log(chalk.yellow.underline('Warnings:\n'), chalk.yellow(warnRules));
+  console.log(chalk.gray.underline('Suggestions:\n'), chalk.gray(suggestRules));
+  console.log(chalk.green.underline('Ignoring:\n'), chalk.green(ignoreWords));
 }
 
 map(docFiles, toVFile.read, function(err, files){
@@ -104,18 +176,18 @@ map(docFiles, toVFile.read, function(err, files){
 
   function checkFile(file, cb) {
     remark()
-      .use(lint, rules.lint || {})
+      .use(lint, lintRules || {})
       .use(remark2retext, retext() // Convert markdown to plain text
-        .use(readability, rules.readability  || {})
-        .use(simplify, {ignore: rules.ignore || []})
-        .use(equality, {ignore: rules.ignore || []})
-        .use(concise, {ignore: rules.ignore || []})
+        .use(readability, readabilityConfig || {})
+        .use(simplify, {ignore: ignoreWords || []})
+        .use(equality, {ignore: ignoreWords || []})
+        .use(concise, {ignore: ignoreWords || []})
         .use(function () {
           return function (tree) {
             visit(tree, 'WordNode', function (node, index, parent) {
               var word = toString(node);
 
-              var unitArr = rules.units || ['GB', 'MB', 'KB', 'K', 'am', 'pm', 'in', 'ft'];
+              var unitArr = config.units || ['GB', 'MB', 'KB', 'K', 'am', 'pm', 'in', 'ft'];
               unitArr = unitArr.concat(['-', 'x']); // Add ranges and dimensions to RegExp
               var units = unitArr.join('|');
 
@@ -136,7 +208,7 @@ map(docFiles, toVFile.read, function(err, files){
         })
         .use(spell, {
           dictionary: dictionary,
-          ignore: rules.ignore || [],
+          ignore: ignoreWords || [],
           ignoreLiteral: true
         })
       )
@@ -150,19 +222,19 @@ map(docFiles, toVFile.read, function(err, files){
       .process(file, function (err, results) {
         var filteredMessages = [];
         results.messages.forEach((message) => {
-          var hasFatalRuleId = _.includes(rules.fatal, message.ruleId);
-          var hasFatalSource = _.includes(rules.fatal, message.source);
-          var hasSuggestedRuleId = _.includes(rules.suggestions, message.ruleId);
-          var hasSuggestedSource = _.includes(rules.suggestions, message.source);
+          var hasFatalRuleId = _.includes(fatalRules, message.ruleId);
+          var hasFatalSource = _.includes(fatalRules, message.source);
+          var hasSuggestedRuleId = _.includes(suggestRules, message.ruleId);
+          var hasSuggestedSource = _.includes(suggestRules, message.source);
 
-          if (rules.suggestions && (hasSuggestedRuleId || hasSuggestedSource)) {
+          if (suggestRules && (hasSuggestedRuleId || hasSuggestedSource)) {
             message.message = message.message.replace( /don\’t use “(.*)”/ig, (match, word) => {
               return 'Use “' +  word + '” sparingly';
             });
             delete message.fatal;
           }
 
-          if (rules.fatal && (hasFatalRuleId || hasFatalSource)) {
+          if (fatalRules && (hasFatalRuleId || hasFatalSource)) {
             message.fatal = true;
           }
 
