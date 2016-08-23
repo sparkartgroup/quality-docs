@@ -12,6 +12,7 @@ HTTP
 HTTPS
 IAM/M
 IP/S
+Jetpack/M
 JSON
 K/Sc
 KB/Sc
@@ -27,6 +28,7 @@ SES
 SFTP
 SLA/S
 SMS/S
+Sparkart/M
 SSH
 SSL
 SSO
