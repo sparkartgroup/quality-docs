@@ -86,16 +86,22 @@ if (!cli.flags.config) {
     }
   }
 
-  // Convert dictionaries string to an array
-  var customDict = customConfig.dictionaries;
-  if (typeof customDict === 'string' || customDict instanceof String) {
-    customConfig.dictionaries = [customDict];
-  }
+  // If custom dictionaries are provided, prepare their paths
+  if (customConfig.dictionaries) {
+    // Convert dictionaries string to an array
+    var customDict = customConfig.dictionaries;
+    if (typeof customDict === 'string' || customDict instanceof String) {
+      customConfig.dictionaries = [customDict];
+    }
 
-  // Add cwd to custom dictionary paths
-  customConfig.dictionaries.forEach((dictionaryPath) => {
-    dictionaryPath = process.cwd() + dictionaryPath;
-  });
+    // Add cwd to custom dictionary paths
+    customConfig.dictionaries.forEach((dictionaryPath) => {
+      dictionaryPath = process.cwd() + dictionaryPath;
+    });
+  } else {
+    // Remove empty dictonaries key so it doesn't override default config
+    delete customConfig.dictionaries;
+  }
 
   // Merge default and custom rules, preferring customRules and concating arrays
   config = _.mergeWith(defaultConfig, customConfig, (objValue, srcValue)=>{
