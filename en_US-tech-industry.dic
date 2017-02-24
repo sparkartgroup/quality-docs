@@ -1,6 +1,8 @@
-100
+110
 1Password/M
+Alibaba/M
 AWS/M
+Browserify/M
 CDN/S
 CSS
 CircleCI/M
@@ -8,10 +10,15 @@ CLI/SM
 Clojure/M
 CloudFlare/M
 CloudFront/M
+CloudWatch/M
+CouchDB/M
+CSV/S
 Cyberduck/M
 DDoS/S
 DNS
 EC2/M
+ES6/M
+ESLint/M
 GB/Sc
 Heroku/M
 HTML
@@ -65,11 +72,13 @@ fulfillment/S
 git/M
 group/JSZGMDRB
 hostname/S
+http/S
 hunspell
 initial
 js
 keychain/S
 lint/R
+localhost
 lookup/S
 metadata
 nameserver/S
@@ -88,4 +97,5 @@ transactional
 uptime
 versioning
 webhook/S
+webpack/M
 wildcard/S
