@@ -1,6 +1,6 @@
 {
   "name": "quality-docs",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "A CLI tool to evaluate the quality of writing in your project's markdown files.",
   "main": "index.js",
   "bin": {
