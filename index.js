@@ -21,6 +21,7 @@ const spell = require('retext-spell');
 const toString = require('nlcst-to-string');
 const toVFile = require('to-vfile');
 const visit = require('unist-util-visit');
+const googGuide = require('retext-google-styleguide');
 
 const cli = meow(`
     Usage
@@ -181,13 +182,15 @@ map(docFiles, toVFile.read, function(err, files){
   })
 
   function checkFile(file, cb) {
+    console.log('checkFile');
     remark()
       .use(lint, lintRules || {})
       .use(remark2retext, retext() // Convert markdown to plain text
-        .use(readability, readabilityConfig || {})
-        .use(simplify, {ignore: ignoreWords || []})
-        .use(equality, {ignore: ignoreWords || []})
-        .use(concise, {ignore: ignoreWords || []})
+        // .use(readability, readabilityConfig || {})
+        // .use(simplify, {ignore: ignoreWords || []})
+        // .use(equality, {ignore: ignoreWords || []})
+        // .use(concise, {ignore: ignoreWords || []})
+        .use(googGuide)
         .use(function () {
           return function (tree) {
             visit(tree, 'WordNode', function (node, index, parent) {
@@ -217,13 +220,15 @@ map(docFiles, toVFile.read, function(err, files){
           ignore: ignoreWords || [],
           ignoreLiteral: true
         })
+        
       )
       .use(control, {name: 'quality-docs', source: [
         'remark-lint',
-        'retext-readability',
-        'retext-simplify',
-        'retext-equality',
-        'retext-intensify'
+        // 'retext-readability',
+        // 'retext-simplify',
+        // 'retext-equality',
+        // 'retext-intensify',
+        'retext-google-styleguide'
       ]})
       .process(file, function (err, results) {
         var filteredMessages = [];
