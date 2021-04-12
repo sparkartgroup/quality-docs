@@ -1,7 +1,8 @@
 {
   "name": "quality-docs-fork",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "A CLI tool to evaluate the quality of writing in your project's markdown files.",
+  "author": "",
   "main": "index.js",
   "bin": {
     "quality-docs": "./index.js"
@@ -13,7 +14,6 @@
     "type": "git",
     "url": "git+https://github.com/markcmurphy/quality-docs-fork.git"
   },
-
   "license": "MIT",
   "dependencies": {
     "async": "^2.0.1",
