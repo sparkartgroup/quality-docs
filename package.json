@@ -8,7 +8,8 @@
     "quality-docs": "./index.js"
   },
   "scripts": {
-    "test": "node index.js {,**/}*.md --config default-config.json"
+    "test": "node index.js {,**/}*.md --config default-config.json",
+    "lint-md": "remark ."
   },
   "repository": {
     "type": "git",
@@ -23,9 +24,9 @@
     "meow": "^3.7.0",
     "minimist": "^1.2.0",
     "nlcst-to-string": "^2.0.0",
-    "remark": "^7.0.0",
-    "remark-lint": "^6.0.0",
+    "remark-lint-write-good": "^1.2.0",
     "remark-message-control": "^4.0.0",
+    "remark-preset-lint-markdown-style-guide": "^4.0.0",
     "remark-retext": "^3.0.0",
     "retext": "^5.0.0",
     "retext-equality": "^3.0.0",
@@ -37,5 +38,9 @@
     "to-vfile": "^2.1.1",
     "unist-util-visit": "^1.1.0",
     "vfile-reporter": "^3.0.0"
+  },
+  "devDependencies": {
+    "remark-cli": "^9.0.0",
+    "remark-preset-lint-recommended": "^5.0.0"
   }
 }

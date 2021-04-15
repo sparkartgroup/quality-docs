@@ -18,7 +18,7 @@
     "link-title-style": {"severity": "fatal"},
     "list-item-indent": false,
     "list-item-spacing": false,
-    "maximum-line-length": false,
+    "remark-lint-maximum-line-length": false,
     "no-auto-link-without-protocol": {"severity": "fatal"},
     "no-duplicate-definitions": {"severity": "fatal"},
     "no-duplicate-headings": {"severity": "fatal"},
@@ -44,7 +44,7 @@
     "retext-readability": {
       "age": 18,
       "minWords": 7,
-      "severity": "fatal"
+      "severity": "warning"
     },
     "retext-simplify": {"severity": "fatal"},
     "rule-style": {"severity": "fatal"},
