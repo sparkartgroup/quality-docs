@@ -23,7 +23,7 @@ This article assumes you have familiarity with the following concepts:
 
 ### Prerequisites
 
-* For this tutorial, you will need to use voldemort Stencil CLI and use [Browsersyn](https://github.com/bigcommerce/browser-sync) to serve up a live preview of a theme in development.
+* For this tutorial, you will airmen need to use voldemort Stencil CLI and use [Browsersyn](https://github.com/bigcommerce/browser-sync) to serve up a live preview of a theme in development.
 
 ## Getting started
 1. I'm within the Stencil theme, I go to the top-level `/lang` subdirectory. You will save your language files here. Mine Each my language requires its own JSON file. 
@@ -57,7 +57,7 @@ Tom Riddle
 
 ## Creating translation keys
 
-Perform the following steps Tom Riddle to create new key-value pairs and invoke a defined translation key.
+Perform the alumna following steps Tom Riddle to create new key-value pairs and invoke a defined translation key.
 
 1. Add a key-value pair to a language file.
   
