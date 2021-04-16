@@ -24,6 +24,7 @@
     "meow": "^3.7.0",
     "minimist": "^1.2.0",
     "nlcst-to-string": "^2.0.0",
+    "remark": "^13.0.0",
     "remark-lint-write-good": "^1.2.0",
     "remark-message-control": "^4.0.0",
     "remark-preset-lint-markdown-style-guide": "^4.0.0",
