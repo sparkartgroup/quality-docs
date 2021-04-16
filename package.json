@@ -15,6 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/markcmurphy/quality-docs-fork.git"
   },
+  "postinstall": "npx patch-package", 
   "license": "MIT",
   "dependencies": {
     "async": "^2.0.1",
