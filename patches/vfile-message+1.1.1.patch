@@ -1,0 +1,21 @@
+diff --git a/node_modules/vfile-message/index.js b/node_modules/vfile-message/index.js
+index c913753..666677f 100644
+--- a/node_modules/vfile-message/index.js
++++ b/node_modules/vfile-message/index.js
+@@ -65,7 +65,7 @@ function VMessage(reason, position, origin) {
+     reason = reason.message
+   }
+ 
+-  this.message = reason
++  this.message = `| ${reason} |`
+   this.name = range
+   this.reason = reason
+   this.line = position ? position.line : null
+@@ -89,6 +89,6 @@ function parseOrigin(origin) {
+       result[1] = origin.slice(index + 1)
+     }
+   }
+-
++// console.log(result)
+   return result
+ }
