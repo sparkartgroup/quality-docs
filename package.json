@@ -9,7 +9,6 @@
   },
   "scripts": {
     "test": "node index.js {,**/}*.md --config default-config.json",
-    "postinstall": "npx patch-package", 
     "lint-md": "remark ."
   },
   "repository": {
