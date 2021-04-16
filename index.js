@@ -446,6 +446,7 @@ map(docFiles, toVFile.read, function (err, files) {
         });
         results.messages = filteredMessages;
         // console.log(filteredMessages)
+        // console.log(results)
         cb(null, results);
       });
   }
