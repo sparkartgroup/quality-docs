@@ -13,17 +13,29 @@ This tool uses [`retext`](https://github.com/wooorm/retext) to check the quality
 - [`retext-simplify`](https://github.com/wooorm/retext-simplify) warns on complicated phrases.
 - [`retext-spell`](https://github.com/wooorm/retext-spell) checks spelling against a US English dictionary and [custom dictionary](#custom-dictionary).
 
+https://github.com/btford/write-good
+
+
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Options](#options)
-  - [Reports](#reports)
-  - [Custom Dictionary](#custom-dictionary)
-  - [Changing Default Config](#changing-default-config)
-- [Troubleshooting](#troubleshooting)
-- [Contribute](#contribute)
-- [License](#license)
+- [`quality-docs`](#quality-docs)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [CLI](#cli)
+      - [Silent Mode](#silent-mode)
+      - [Config](#config)
+      - [Ignore](#ignore)
+    - [Reports](#reports)
+    - [Custom Dictionary](#custom-dictionary)
+    - [Changing Default Config](#changing-default-config)
+  - [Troubleshooting](#troubleshooting)
+    - [Names are flagged as misspelled](#names-are-flagged-as-misspelled)
+    - [Other non-dictionary terms are flagged as misspelled](#other-non-dictionary-terms-are-flagged-as-misspelled)
+    - [Table cells are flagged as being incorrectly padded](#table-cells-are-flagged-as-being-incorrectly-padded)
+    - [Another issue is being incorrectly flagged](#another-issue-is-being-incorrectly-flagged)
+  - [Contribute](#contribute)
+  - [License](#license)
 
 ## Installation
 
