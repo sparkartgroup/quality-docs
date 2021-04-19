@@ -149,29 +149,21 @@ if (config.dictionaries && config.dictionaries.length >= 1) {
 
 var lintRules = _.mapValues(config.rules, (value) => {
   var keys = Object.keys(value);
-  // console.log(keys);
   if (_.isBoolean(value)) return value;
-  // console.log(value);
   if (value.hasOwnProperty('severity')) {
     if (Object.keys(value).length == 1) return true;
     var newValue = {};
     for (var prop in value) {
-      // console.log(prop)
-      // if (prop !== 'severity') {
-      //   newValue[prop] = value[prop];
-      // }
       if (prop !== 'severity') newValue[prop] = value[prop];
-
     }
-    // console.log('newValue');
-    // console.log(newValue);
+
     return newValue;
 
   }
-  // console.log(value)
+
   return value;
 });
-// console.log(lintRules)
+
 
 var fatalRules = _.keys(_.pickBy(config.rules, function (value) {
   return value.severity == 'fatal';
@@ -363,11 +355,6 @@ map(docFiles, toVFile.read, function (err, files) {
   function checkFile(file, cb) {
     remark()
       // .use(linterRules)
-      // .use(writeGood, {
-      //   passive: false,
-      //   tooWordy: false
-      //   // writeGoodExtension.voldemort: true
-      // })
       .use(writeGood, {
         checks: genderBias
       })
@@ -375,11 +362,11 @@ map(docFiles, toVFile.read, function (err, files) {
         checks: firstPerson
       })
       .use(remark2retext, retext() // Convert markdown to plain text
-        // .use(readability, readabilityConfig || {})
+        .use(readability, readabilityConfig || {})
         // .use(simplify, {ignore: ignoreWords || []})
         // .use(equality, {ignore: ignoreWords || []})
         // .use(concise, {ignore: ignoreWords || []})
-        // .use(googGuide)
+        .use(googGuide)
         .use(function () {
           return function (tree) {
             visit(tree, 'WordNode', function (node, index, parent) {
@@ -404,23 +391,23 @@ map(docFiles, toVFile.read, function (err, files) {
             });
           };
         })
-        // .use(spell, {
-        //   dictionary: dictionary,
-        //   ignore: ignoreWords || [],
-        //   ignoreLiteral: true
-        // })
+        .use(spell, {
+          dictionary: dictionary,
+          ignore: ignoreWords || [],
+          ignoreLiteral: true
+        })
 
       )
       .use(control, {
         name: 'quality-docs',
         source: [
           'remark-lint',
-          // 'remark-line-write-good',
-          // 'retext-readability',
-          // 'retext-simplify',
-          // 'retext-equality',
-          // 'retext-intensify',
-          // 'retext-google-styleguide'
+          'remark-line-write-good',
+          'retext-readability',
+          'retext-simplify',
+          'retext-equality',
+          'retext-intensify',
+          'retext-google-styleguide'
         ]
       })
       .process(file, function (err, results) {

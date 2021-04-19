@@ -52,7 +52,8 @@
     "table-pipe-alignment": {"severity": "fatal"},
     "table-pipes": {"severity": "fatal"},
     "unordered-list-marker-style": {"severity": "fatal"},
-    "weasel": {"severity": "suggest"}
+    "weasel": {"severity": "suggest"},
+    "remark-lint-write-good": {"severity": "fatal"}
   },
   "ignore": [
     "address",
