@@ -391,11 +391,11 @@ map(docFiles, toVFile.read, function (err, files) {
             });
           };
         })
-        .use(spell, {
-          dictionary: dictionary,
-          ignore: ignoreWords || [],
-          ignoreLiteral: true
-        })
+        // .use(spell, {
+        //   dictionary: dictionary,
+        //   ignore: ignoreWords || [],
+        //   ignoreLiteral: true
+        // })
 
       )
       .use(control, {
