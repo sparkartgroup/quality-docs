@@ -1,8 +1,8 @@
-# `quality-docs`
+# `quality-docs-fork`
 
 ![Screenshot](./screenshot.png)
 
-> A CLI tool to check the quality of writing in your project's markdown or plain text documentation.
+> A CLI tool meant to be used with Reviewdog to check the quality of writing in your project's markdown or plain text documentation.
 
 This tool uses [`retext`](https://github.com/wooorm/retext) to check the quality of writing in your project's documentation using these plugins;
 
