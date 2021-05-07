@@ -364,7 +364,7 @@ map(docFiles, toVFile.read, function (err, files) {
         // .use(simplify, {ignore: ignoreWords || []})
         // .use(equality, {ignore: ignoreWords || []})
         // .use(concise, {ignore: ignoreWords || []})
-        .use(googGuide)
+        
         .use(function () {
           return function (tree) {
             visit(tree, 'WordNode', function (node, index, parent) {
@@ -378,7 +378,8 @@ map(docFiles, toVFile.read, function (err, files) {
               // 500GB, 8am-6pm, 10-11am, 1024x768, 3x5in, etc
               var unitFilter = new RegExp('^\\d+(' + units + ')+\\d*(' + units + ')*$', 'i');
               var emailFilter = new RegExp('^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$', 'i');
-              if (emailFilter.test(word) || unitFilter.test(word)) {
+              var urlFilter = new RegExp('https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*'))
+              if (emailFilter.test(word) || unitFilter.test(word) || urlFilter.test(word)) {
                 parent.children[index] = {
                   type: 'SourceNode',
                   value: word,
@@ -389,6 +390,7 @@ map(docFiles, toVFile.read, function (err, files) {
             });
           };
         })
+        .use(googGuide)
         .use(spell, {
           dictionary: dictionary,
           ignore: ignoreWords || [],
