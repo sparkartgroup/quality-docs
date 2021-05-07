@@ -8,8 +8,8 @@ const control = require('remark-message-control');
 const en_US = require('dictionary-en-us');
 const equality = require('retext-equality');
 const fs = require('fs');
-// const lint = require('remark-lint');
-const lint = require('remark-lint-maximum-line-length');
+const lint = require('remark-lint');
+// const lint = require('remark-lint-maximum-line-length');
 // const lint = require('remark-cli');
 // const lint = require('remark-preset-lint-markdown-style-guide');
 const map = require("async/map");
@@ -389,12 +389,11 @@ map(docFiles, toVFile.read, function (err, files) {
             });
           };
         })
-        // .use(spell, {
-        //   dictionary: dictionary,
-        //   ignore: ignoreWords || [],
-        //   ignoreLiteral: true
-        // })
-
+        .use(spell, {
+          dictionary: dictionary,
+          ignore: ignoreWords || [],
+          ignoreLiteral: true
+        })
       )
       .use(control, {
         name: 'quality-docs',
