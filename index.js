@@ -24,14 +24,13 @@ const simplify = require('retext-simplify');
 const spell = require('retext-spell');
 const toString = require('nlcst-to-string');
 const toVFile = require('to-vfile');
-// const visit = require('unist-util-visit');
+const visit = require('unist-util-visit');
 const googGuide = require('retext-google-styleguide');
 const writeGood = require('remark-lint-write-good');
 const writeGoodExtension = require('./modules/writeGoodExtension.js');
 const firstPerson = require('./modules/firstPerson.js');
 const genderBias = require('./modules/genderBias.js');
 
-import {visit} from 'unist-util-visit';
 
 const cli = meow(`
     Usage
