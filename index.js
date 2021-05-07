@@ -156,9 +156,7 @@ var lintRules = _.mapValues(config.rules, (value) => {
     for (var prop in value) {
       if (prop !== 'severity') newValue[prop] = value[prop];
     }
-
     return newValue;
-
   }
 
   return value;
@@ -362,7 +360,7 @@ map(docFiles, toVFile.read, function (err, files) {
         checks: firstPerson
       })
       .use(remark2retext, retext() // Convert markdown to plain text
-        .use(readability, readabilityConfig || {})
+        // .use(readability, readabilityConfig || {})
         // .use(simplify, {ignore: ignoreWords || []})
         // .use(equality, {ignore: ignoreWords || []})
         // .use(concise, {ignore: ignoreWords || []})
@@ -432,8 +430,6 @@ map(docFiles, toVFile.read, function (err, files) {
           filteredMessages.push(message);
         });
         results.messages = filteredMessages;
-        // console.log(filteredMessages)
-        // console.log(results)
         cb(null, results);
       });
   }
