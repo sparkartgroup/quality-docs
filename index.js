@@ -24,13 +24,14 @@ const simplify = require('retext-simplify');
 const spell = require('retext-spell');
 const toString = require('nlcst-to-string');
 const toVFile = require('to-vfile');
-const visit = require('unist-util-visit');
+// const visit = require('unist-util-visit');
 const googGuide = require('retext-google-styleguide');
 const writeGood = require('remark-lint-write-good');
 const writeGoodExtension = require('./modules/writeGoodExtension.js');
 const firstPerson = require('./modules/firstPerson.js');
 const genderBias = require('./modules/genderBias.js');
 
+import {visit} from 'unist-util-visit';
 
 const cli = meow(`
     Usage
@@ -378,6 +379,7 @@ map(docFiles, toVFile.read, function (err, files) {
               // 500GB, 8am-6pm, 10-11am, 1024x768, 3x5in, etc
               var unitFilter = new RegExp('^\\d+(' + units + ')+\\d*(' + units + ')*$', 'i');
               var emailFilter = new RegExp('^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$', 'i');
+              // Ignore URLs:
               var urlFilter = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
               if (emailFilter.test(word) || unitFilter.test(word) || urlFilter.test(word)) {
                 parent.children[index] = {
