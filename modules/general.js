@@ -141,4 +141,19 @@ module.exports = {
         },
         explanation: 'Put a nonbreaking space between the number and the unit. https://developers.google.com/style/units-of-measure'
     },
+    personalPronouns: {
+        fn: function (text) {
+            var positives = ['we', 'we\'(?:ve|re)', 'ours?', 'us'];
+            var suggestions = [];
+            var re = new RegExp(positives.join('|'), 'gi');
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Try to avoid using first-person plural. https://developers.google.com/style/pronouns#personal-pronouns'
+    },
 }
