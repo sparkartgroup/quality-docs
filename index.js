@@ -27,9 +27,12 @@ const toVFile = require('to-vfile');
 const visit = require('unist-util-visit');
 const googGuide = require('retext-google-styleguide');
 const writeGood = require('remark-lint-write-good');
+
+// writeGood modules
 const writeGoodExtension = require('./modules/writeGoodExtension.js');
 const firstPerson = require('./modules/firstPerson.js');
 const genderBias = require('./modules/genderBias.js');
+const dateFormat = require('./modules/dateFormat.js');
 
 
 const cli = meow(`
@@ -359,6 +362,9 @@ map(docFiles, toVFile.read, function (err, files) {
       .use(writeGood, {
         checks: firstPerson
       })
+      .use(writeGood, {
+        checks: dateFormat
+      })
       .use(remark2retext, retext() // Convert markdown to plain text
         // .use(readability, readabilityConfig || {})
         // .use(simplify, {ignore: ignoreWords || []})
@@ -391,7 +397,7 @@ map(docFiles, toVFile.read, function (err, files) {
             });
           };
         })
-        // .use(googGuide)
+        .use(googGuide)
         // TODO: honor ignoreWords
         // .use(spell, {
         //   dictionary: dictionary,

@@ -10,6 +10,11 @@ module.exports = {
           offset: match[0].length,
         });
       }
+      // let word; 
+      // while ((word = re.exec(text)) !== null) {
+      //   let msg = word[0];
+      //   console.log(msg);
+      // }
       return suggestions;
     },
     explanation: 'Please use "graduate" instead'
