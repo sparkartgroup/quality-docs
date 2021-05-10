@@ -34,6 +34,7 @@ const firstPerson = require('./modules/firstPerson.js');
 const genderBias = require('./modules/genderBias.js');
 const dateFormat = require('./modules/dateFormat.js');
 const ellipses = require('./modules/ellipses.js');
+const emdash = require('./modules/emdash.js');
 
 
 const cli = meow(`
@@ -368,6 +369,9 @@ map(docFiles, toVFile.read, function (err, files) {
       })
       .use(writeGood, {
         checks: ellipses
+      })
+      .use(writeGood, {
+        checks: emdash
       })
       .use(remark2retext, retext() // Convert markdown to plain text
         // .use(readability, readabilityConfig || {})
