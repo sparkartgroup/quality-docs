@@ -55,4 +55,18 @@ module.exports = {
         },
         explanation: 'In a series of three or more items, use a comma before the final \"and\" or \"or\". https://developers.google.com/style/commas'
     },
+    parentheses: {
+        fn: function (text) {
+            var re = /\(.+\)/gi
+            var suggestions = [];
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Don\'t put important information in parentheses if you can help it. https://developers.google.com/style/parentheses'
+    },
 }
