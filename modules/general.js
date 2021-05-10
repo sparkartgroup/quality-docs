@@ -97,6 +97,20 @@ module.exports = {
             return suggestions;
         },
         explanation: 'Don\'t add words such as \'from\' or \'between\' to describe a range of numbers. https://developers.google.com/style/hyphens'
-
+    },
+    semicolons: {
+        fn: function (text) {
+            var re = /;/gi
+            console.log(re)
+            var suggestions = [];
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Use semicolons judiciously. https://developers.google.com/style/semicolons'
     },
 }
