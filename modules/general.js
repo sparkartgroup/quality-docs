@@ -86,7 +86,6 @@ module.exports = {
     ranges: {
         fn: function (text) {
             var re = /(?:from|between)\s\d+\s?-\s?\d+/gi
-            console.log(re)
             var suggestions = [];
             while (match = re.exec(text)) {
                 suggestions.push({
@@ -101,7 +100,6 @@ module.exports = {
     semicolons: {
         fn: function (text) {
             var re = /;/gi
-            console.log(re)
             var suggestions = [];
             while (match = re.exec(text)) {
                 suggestions.push({
@@ -112,5 +110,20 @@ module.exports = {
             return suggestions;
         },
         explanation: 'Use semicolons judiciously. https://developers.google.com/style/semicolons'
+    },
+    spacing: {
+        fn: function (text) {
+            var positives = ["[a-z][.?!] {2,}[A-Z]", "[a-z][.?!] {2,}[A-Z]"];
+            var suggestions = [];
+            var re = new RegExp(positives.join('|'), 'gi');
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Leave only one space between sentences. https://developers.google.com/style/sentence-spacing'
     },
 }
