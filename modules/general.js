@@ -27,4 +27,18 @@ module.exports = {
         },
         explanation: 'Don\'t use plurals in parentheses. If it\'s important in a specific context to indicate singular and plural, use \"one or more\". https://developers.google.com/style/plurals-parentheses'
     },
+    ordinals: {
+        fn: function (text) {
+            var re = /\d+(?:st|nd|rd|th)/gi
+            var suggestions = [];
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Spell out all ordinal numbers in text. https://developers.google.com/style/numbers'
+    },
 }
