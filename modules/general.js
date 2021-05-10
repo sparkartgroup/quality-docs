@@ -83,4 +83,20 @@ module.exports = {
         },
         explanation: 'Commas and periods go inside quotation marks. https://developers.google.com/style/quotation-marks'
     },
+    ranges: {
+        fn: function (text) {
+            var re = /(?:from|between)\s\d+\s?-\s?\d+/gi
+            console.log(re)
+            var suggestions = [];
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Don\'t add words such as \'from\' or \'between\' to describe a range of numbers. https://developers.google.com/style/hyphens'
+
+    },
 }
