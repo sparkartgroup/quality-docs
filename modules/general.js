@@ -69,4 +69,18 @@ module.exports = {
         },
         explanation: 'Don\'t put important information in parentheses if you can help it. https://developers.google.com/style/parentheses'
     },
+    quotes: {
+        fn: function (text) {
+            var re = /"[^"]+"[.,?]/gi
+            var suggestions = [];
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Commas and periods go inside quotation marks. https://developers.google.com/style/quotation-marks'
+    },
 }
