@@ -13,7 +13,7 @@
 <!-- 64GB
 10min -->
 
-we
+<!-- we
 
 we're
 
@@ -23,4 +23,7 @@ ours
 
 us
 
-let's
+let's -->
+
+
+Send a query to the service. The server will send an acknowledgment.
