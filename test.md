@@ -1,3 +1,1 @@
-Free, simple, and publicly-available implementations
-
-To get profile information for the currently-authorized user
+To find your API key(s), visit the Credentials page.
