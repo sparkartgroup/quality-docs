@@ -3,7 +3,6 @@ module.exports = {
     fn: function (text) {
       var positives = ["(?:alumna|alumnus)"];
       var re = new RegExp(positives.join('|'), 'gi');
-
       var suggestions = [];
       while (match = re.exec(text)) {
         suggestions.push({

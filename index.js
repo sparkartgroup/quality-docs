@@ -348,11 +348,11 @@ map(docFiles, toVFile.read, function (err, files) {
 
   })
 
-
-
   function checkFile(file, cb) {
     remark()
       // .use(linterRules)
+      // TODO: import all writeGood modules at once
+      // TODO: is visit working with remark-lint-write-good?      
       .use(writeGood, {
         checks: genderBias
       })
@@ -364,7 +364,7 @@ map(docFiles, toVFile.read, function (err, files) {
         // .use(simplify, {ignore: ignoreWords || []})
         // .use(equality, {ignore: ignoreWords || []})
         // .use(concise, {ignore: ignoreWords || []})
-        
+
         .use(function () {
           return function (tree) {
             visit(tree, 'WordNode', function (node, index, parent) {
@@ -391,12 +391,13 @@ map(docFiles, toVFile.read, function (err, files) {
             });
           };
         })
-        .use(googGuide)
-        .use(spell, {
-          dictionary: dictionary,
-          ignore: ignoreWords || [],
-          ignoreLiteral: true
-        })
+        // .use(googGuide)
+        // TODO: honor ignoreWords
+        // .use(spell, {
+        //   dictionary: dictionary,
+        //   ignore: ignoreWords || [],
+        //   ignoreLiteral: true
+        // })
       )
       .use(control, {
         name: 'quality-docs',
