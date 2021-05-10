@@ -36,6 +36,7 @@ const dateFormat = require('./modules/dateFormat.js');
 const ellipses = require('./modules/ellipses.js');
 const emdash = require('./modules/emdash.js');
 const exclamation = require('./modules/exclamation.js');
+const general = require('./modules/general.js');
 
 
 const cli = meow(`
@@ -376,6 +377,9 @@ map(docFiles, toVFile.read, function (err, files) {
       })
       .use(writeGood, {
         checks: exclamation
+      })
+      .use(writeGood, {
+        checks: general
       })
       .use(remark2retext, retext() // Convert markdown to plain text
         // .use(readability, readabilityConfig || {})

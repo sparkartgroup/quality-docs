@@ -1,7 +1,7 @@
 module.exports = {
-    ellipsis: {
+    lyHypen: {
         fn: function (text) {
-            var re = /\.\.\./gi
+            var re = /\s[^\s-]+ly-/gi
             var suggestions = [];
             while (match = re.exec(text)) {
                 suggestions.push({
@@ -11,6 +11,6 @@ module.exports = {
             }
             return suggestions;
         },
-        explanation: 'In general, don\'t use an ellipsis. https://developers.google.com/style/ellipses'
-    }
+        explanation: 'Don\'t hyphenate adverbs ending in -ly except where needed for clarity. https://developers.google.com/style/hyphens'
+    },
 }

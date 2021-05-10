@@ -1,2 +1,3 @@
-Appendix A—first appendix!!
-Appendix A—first appendix!
+Free, simple, and publicly-available implementations
+
+To get profile information for the currently-authorized user
