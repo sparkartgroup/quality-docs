@@ -126,4 +126,19 @@ module.exports = {
         },
         explanation: 'Leave only one space between sentences. https://developers.google.com/style/sentence-spacing'
     },
+    unitesOfMeasurement: {
+        fn: function (text) {
+            var positives = ['\\d+(?:B|kB|MB|GB|TB)', '\\d+(?:ns|ms|s|min|h|d)'];
+            var suggestions = [];
+            var re = new RegExp(positives.join('|'), 'gi');
+            while (match = re.exec(text)) {
+                suggestions.push({
+                    index: match.index,
+                    offset: match[0].length,
+                });
+            }
+            return suggestions;
+        },
+        explanation: 'Put a nonbreaking space between the number and the unit. https://developers.google.com/style/units-of-measure'
+    },
 }
