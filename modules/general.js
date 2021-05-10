@@ -143,7 +143,7 @@ module.exports = {
     },
     personalPronouns: {
         fn: function (text) {
-            var positives = ['we', 'we\'(?:ve|re)', 'ours?', 'us'];
+            var positives = ['\\bwe\\b', '\\bwe\'(?:ve|re)', '\\bours?', '\\bus\\b'];
             var suggestions = [];
             var re = new RegExp(positives.join('|'), 'gi');
             while (match = re.exec(text)) {

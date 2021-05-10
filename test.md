@@ -1,29 +1,15 @@
-<!-- 1st -->
+your
 
-<!-- I dedicate this book to my parents, Ayn and God. -->
-<!-- I dedicate this book to my parents, Ayn or God. -->
+seeweed
 
-<!-- This is a thing you should know (which is why I mention it). -->
-
-<!-- "Do this thing today". -->
-
-<!-- between 8-20 files; -->
-
-<!-- tldr.  New sentence. -->
-<!-- 64GB
-10min -->
-
-<!-- we
-
-we're
-
-we've
+our
 
 ours
 
 us
 
-let's -->
+lazarus
 
+we're
 
-Send a query to the service. The server will send an acknowledgment.
+we are
