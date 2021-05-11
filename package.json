@@ -29,6 +29,7 @@
     "remark-message-control": "^4.0.0",
     "remark-preset-lint-markdown-style-guide": "^4.0.0",
     "remark-retext": "^3.0.0",
+    "remark-validate-links": "^10.0.4",
     "retext": "^5.0.0",
     "retext-equality": "^3.0.0",
     "retext-google-styleguide": "^1.0.0",

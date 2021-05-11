@@ -26,6 +26,7 @@ const toString = require('nlcst-to-string');
 const toVFile = require('to-vfile');
 const visit = require('unist-util-visit');
 const googGuide = require('retext-google-styleguide');
+const validateLinks = require('remark-validate-links')
 
 // writeGood modules
 const writeGood = require('remark-lint-write-good');
@@ -383,6 +384,7 @@ map(docFiles, toVFile.read, function (err, files) {
       .use(writeGood, {
         checks: general
       })
+      .use(validateLinks, {})
       .use(remark2retext, retext() // Convert markdown to plain text
         // .use(readability, readabilityConfig || {})
         // .use(simplify, {ignore: ignoreWords || []})
@@ -393,12 +395,9 @@ map(docFiles, toVFile.read, function (err, files) {
           return function (tree) {
             visit(tree, 'WordNode', function (node, index, parent) {
               var word = toString(node);
-              console.log(word)
-
               var unitArr = config.units || ['GB', 'MB', 'KB', 'K', 'am', 'pm', 'in', 'ft'];
               unitArr = unitArr.concat(['-', 'x']); // Add ranges and dimensions to RegExp
               var units = unitArr.join('|');
-
               // Ignore email addresses and the following types of non-words:
               // 500GB, 8am-6pm, 10-11am, 1024x768, 3x5in, etc
               var unitFilter = new RegExp('^\\d+(' + units + ')+\\d*(' + units + ')*$', 'i');

@@ -12,9 +12,5 @@ This tool uses [`retext`](https://github.com/wooorm/retext) to check the quality
 - [`retext-readability`](https://github.com/wooorm/retext-readability) checks the reading level of the whole document.
 - [`retext-simplify`](https://github.com/wooorm/retext-simplify) warns on complicated phrases.
 - [`retext-spell`](https://github.com/wooorm/retext-spell) checks spelling against a US English dictionary and [custom dictionary](#custom-dictionary).
-- [write-good](https://github.com/btford/write-good)
-
-
-## License
-
-[MIT &copy; 2016 Sparkart Group Inc.](./LICENSE)
+- [`write-good`](https://github.com/btford/write-good)
+- [`remark-validate-links`](https://github.com/remarkjs/remark-validate-links) validates that Markdown links and images reference existing local files and headings.
