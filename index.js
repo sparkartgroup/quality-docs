@@ -330,6 +330,8 @@ var readabilityConfig = config.rules['retext-readability'];
 
 var ignoreWords = _.difference(config.ignore, config.noIgnore);
 
+console.log(ignoreWords)
+
 if (cli.flags.verbose) {
   console.log(chalk.red.underline('Fatal rules:\n'), chalk.red(fatalRules));
   console.log(chalk.yellow.underline('Warnings:\n'), chalk.yellow(warnRules));
@@ -391,6 +393,7 @@ map(docFiles, toVFile.read, function (err, files) {
           return function (tree) {
             visit(tree, 'WordNode', function (node, index, parent) {
               var word = toString(node);
+              console.log(word)
 
               var unitArr = config.units || ['GB', 'MB', 'KB', 'K', 'am', 'pm', 'in', 'ft'];
               unitArr = unitArr.concat(['-', 'x']); // Add ranges and dimensions to RegExp
@@ -413,13 +416,14 @@ map(docFiles, toVFile.read, function (err, files) {
             });
           };
         })
-        .use(googGuide)
-        // TODO: honor ignoreWords
-        // .use(spell, {
-        //   dictionary: dictionary,
-        //   ignore: ignoreWords || [],
-        //   ignoreLiteral: true
-        // })
+        .use(googGuide, {
+          ignore: ignoreWords || []
+        })
+        .use(spell, {
+          dictionary: dictionary,
+          ignore: ignoreWords || [],
+          ignoreLiteral: true
+        })
       )
       .use(control, {
         name: 'quality-docs',
